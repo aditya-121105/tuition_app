@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Saraswati Group Tuition Classes</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='imgs/logo.png') }}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+
+
+<style>
+
+/* Global */
+body {
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+a { text-decoration: none !important; }
+
+/* NAVBAR */
+.header {
+  background: #fff;
+  padding: 10px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo img {
+  height: 65px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Navigation */
+.navmenu a {
+  font-weight: 500;
+  color: #4a4a4a;
+  padding: 8px 12px;
+  transition: .3s;
+}
+
+.navmenu a:hover,
+.navmenu .active {
+  background: #f4c430;
+  color: #fff;
+  border-radius: 8px;
+}
+
+/* ---- HERO SECTION ---- */
+.hero {
+  height: 92vh;
+  background: url('{{ url_for("static", filename="imgs/hero_banner.png") }}') center/cover no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.hero h2, .hero p, .hero a {
+  position: relative;
+  z-index: 5;
+  color: #fff;
+}
+
+.hero h2 {
+  font-size: 55px;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+/* CTA Button */
+.btn-premium {
+  background: #f4c430;
+  padding: 14px 35px;
+  border-radius: 40px;
+  color: #000;
+  font-weight: 600;
+  font-size: 20px;
+  margin-top: 25px;
+  transition: .4s;
+}
+
+.btn-premium:hover {
+  background: #d39e23;
+  color: #fff;
+  box-shadow: 0 5px 25px rgba(244,196,48,0.4);
+}
+
+/* INTRO SECTION */
+.intro-box {
+  background: #fff8df;
+  width: 85%;
+  padding: 45px;
+  border-radius: 15px;
+  margin: 60px auto;
+  border-left: 10px solid #f4c430;
+  text-align: center;
+}
+
+/* FEATURES */
+.info-box {
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  border: 2px solid #f4c430;
+  transition: .3s ease;
+}
+
+.info-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* CTA Section */
+.btn-main {
+  background: #f4c430;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: .3s ease;
+}
+
+.btn-main:hover {
+  background: #d39e23;
+  color: #fff;
+}
+
+/* FOOTER */
+footer {
+  background: #2b2b2b;
+  padding: 35px;
+  text-align: center;
+  color: #fff;
+  margin-top: 60px;
+  font-size: 15px;
+}
+.plain-list {
+  padding: 0;
+  margin-left: 330px;
+    text-align: left;
+}
+
+.plain-list li {
+  margin-bottom: 6px;
+}
+
+
+</style>
+</head>
+
+
+
+
+<body>
+
+<!-- HEADER -->
+<header class="header sticky-top">
+  <div class="container d-flex align-items-center">
+
+    <a href="/" class="logo d-flex align-items-center me-auto">
+      <img src="{{ url_for('static', filename='imgs/logo.png') }}" alt="Logo">
+      <span class="brand-title">Saraswati Group Tuition Classes</span>
+    </a>
+
+    <nav class="navmenu d-flex gap-3">
+      <a href="/" class="active">Home</a>
+      <a href="/about">About</a>
+      <a href="/classes">Courses</a>
+      <a href="/timetable">Timetable</a>
+      <a href="/gallery">Gallery</a>
+      <a href="/contact">Contact</a>
+      <a href="/login"><b>Login</b></a>
+    </nav>
+
+  </div>
+</header>
+
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div>
+    <h2>Saraswati Group Tuition Classes</h2>
+    <p>Learn with the blessings of Maa Saraswati ✨</p>
+    <a href="/contact" class="btn-premium">Schedule a Free Meeting</a>
+  </div>
+</section>
+
+
+<!-- INTRO -->
+<section class="intro-box">
+  <h3>Why Students Love Learning With Us ❤️</h3>
+  <ul class="plain-list">
+    <li>We conduct tests every 15 days to track real improvement.</li>
+    <li>Subjects taught include:</li>
+    <li style="margin-left: 50px">Class 1–6 (All Subjects)</li>
+    <li style="margin-left: 50px">Class 7–10 (English, Maths, Science & Social Science)</li>
+    <li style="margin-left: 50px">Class 11–12 Arts (Economics, Psychology, Sociology & English)</li>
+    <li>90% of our students consistently pass and score high in board exams.</li>
+    <li>Our teaching style is fun, structured & affordable.</li>
+  </ul>
+</section>
+
+
+<!-- FEATURES -->
+<section class="container mb-5">
+  <h2 class="text-center mb-4">What We Teach</h2>
+
+  <div class="row gy-4">
+
+    <div class="col-md-4">
+      <div class="info-box">
+        <h5>📘 Class 1–6</h5>
+        <p>All subjects with activity-based learning.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="info-box">
+        <h5>📚 Class 7–10</h5>
+        <p>Maths, Science, English & Social Science.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="info-box">
+        <h5>🎓 Class 11–12 (Arts)</h5>
+        <p>Psychology, Economics, English & Sociology.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CTA -->
+<div class="text-center my-5">
+  <h3>📞 Admissions Open</h3>
+    <br>
+  <a href="/contact" class="btn-main">Schedule a Free Meeting</a>
+</div>
+
+
+<!-- FOOTER -->
+<footer>
+  © 2025 Saraswati Group Tuition Classes — All Rights Reserved
+</footer>
+
+</body>
+</html>
