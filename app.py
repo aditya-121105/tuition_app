@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 app.secret_key = "your_secret_key_here"
 # Database Setup
-app.config['SQLALCHEMY_DATABASE_URI'] = postgresql://tuition_db_bvg8_user:5614G3BZ5E7v3PSkc3GwF7bZxbNu9GaM@dpg-d4mqqichg0os73c2u3o0-a/tuition_db_bvg8
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://tuition_db_bvg8_user:5614G3BZ5E7v3PSkc3GwF7bZxbNu9GaM@dpg-d4mqqichg0os73c2u3o0-a/tuition_db_bvg8"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 with app.app_context():
