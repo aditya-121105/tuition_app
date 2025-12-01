@@ -1,5 +1,8 @@
 from flask import Flask, render_template, redirect, request, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_babel import Babel, gettext as _
+from flask import session
+
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User
@@ -8,8 +11,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"
 
+app.secret_key = "your_secret_key_here"
 # Database Setup
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tuition.db'
 db.init_app(app)
@@ -17,6 +20,11 @@ db.init_app(app)
 SENDER_EMAIL = "kumarkhaniyaaditya123@gmail.com"       # will send mail
 RECEIVER_EMAIL = "adityakumarkhaniya143@gmail.com"     # will receive mail
 APP_PASSWORD = "vzgclkctxuqkoovk"
+
+
+
+
+
 def send_email(subject, body):
     msg = MIMEText(body)
     msg["Subject"] = subject
@@ -44,17 +52,26 @@ def load_user(user_id):
 # -------- Public Routes --------
 @app.route("/")
 def home():
-    return render_template("public/index.html")
+    ua = request.user_agent.string.lower()
+    if "mobile" in ua:
+        return render_template("public/index_mobile.html")  # mobile page
+    else:
+        return render_template("public/index.html")
 
 @app.route("/about")
 def about():
-    return render_template("public/about.html")
+    ua = request.user_agent.string.lower()
+    if "mobile" in ua:
+        return render_template("public/about_mobile.html")  # mobile page
+    else:
+        return render_template("public/about.html")
 
 from flask import Flask, render_template, redirect, request, flash, url_for
 # (you already have this import at the top)
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
+    ua = request.user_agent.string.lower()
     if request.method == "POST":
         name = request.form.get("name")
         number = request.form.get("phone")
@@ -81,13 +98,16 @@ Message:
 
         return redirect("/contact")
 
-    return render_template("public/contact.html")
-
+    if 'mobile' in ua:
+        return render_template("public/contact_mobile.html")
+    else:
+        return render_template("public/contact.html")
 
 
 # -------- Auth Routes --------
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    ua = request.user_agent.string.lower()
     if request.method == "POST":
         identifier = request.form.get("identifier")
         password = request.form.get("password")
@@ -109,8 +129,10 @@ def login():
 
         flash("❌ Incorrect login details!", "danger")
 
-    return render_template("dashboard/login.html")
-
+    if 'mobile' in ua:
+        return render_template("dashboard/login_mobile.html")
+    else:
+        return render_template("dashboard/login.html")
 
 
 @app.route("/logout")
@@ -124,15 +146,21 @@ def logout():
 @app.route("/student/dashboard")
 @login_required
 def student_dashboard():
+    ua = request.user_agent.string.lower()
     if current_user.role != "student":
         return "Access Denied", 403
-    return render_template("dashboard/student_dashboard.html")
+    elif 'mobile' in ua:
+        return render_template("dashboard/student_dashboard_mobile.html")
+    else:
+        return render_template("dashboard/student_dashboard.html")
+
+
 @app.route("/teacher/attendance", methods=["GET", "POST"])
 @login_required
 def teacher_attendance():
     if current_user.role != "teacher":
         return "Access Denied", 403
-
+    ua = request.user_agent.string.lower()
     selected_class = request.args.get("class", "all")
 
     # Fetch unique class list
@@ -156,12 +184,13 @@ def teacher_attendance():
         db.session.commit()
         flash("Attendance saved successfully!", "success")
         return redirect(f"/teacher/attendance?class={selected_class}")
-
-    return render_template("dashboard/teacher_attendance.html",
+    elif 'mobile' in ua:
+        return render_template("dashboard/teacher_attendance_mobile.html",
                            students=students,
                            classes=classes,
                            selected_class=selected_class)
-
+    else:
+        return render_template("dashboard/teacher_attendance.html", students=students,classes=classes, selected_class=selected_class)
 from datetime import datetime
 
 def generate_fee_records(student_id, year, monthly_fee, date_joined):
@@ -201,6 +230,7 @@ def generate_password():
 @app.route("/teacher/dashboard")
 @login_required
 def teacher_dashboard():
+    ua = request.user_agent.string.lower()
     if current_user.role != "teacher":
         return "Access Denied", 403
 
@@ -237,25 +267,35 @@ def teacher_dashboard():
 
     # Attendance % (placeholder until attendance analyzer is built)
     present_percentage = 89
-
-    return render_template("dashboard/teacher_dashboard.html",
-                           total_students=total_students,
-                           monthly_income=monthly_income,
-                           pending_fees=pending_fees,
-                           present_percentage=present_percentage,
-                           class_summary=class_summary)
+    if 'mobile' in ua:
+        return render_template("dashboard/teacher_dashboard_mobile.html",
+                               total_students=total_students,
+                               monthly_income=monthly_income,
+                               pending_fees=pending_fees,
+                               present_percentage=present_percentage,
+                               class_summary=class_summary)
+    else:
+        return render_template("dashboard/teacher_dashboard.html",
+                               total_students=total_students,
+                               monthly_income=monthly_income,
+                               pending_fees=pending_fees,
+                               present_percentage=present_percentage,
+                               class_summary=class_summary)
 
 
 @app.route("/student/attendance")
 @login_required
 def student_attendance():
+    ua = request.user_agent.string.lower()
     if current_user.role != "student":
         return "Access Denied", 403
 
     records = StudentAttendance.query.filter_by(student_id=current_user.id).all()
 
-    return render_template("dashboard/student_attendance.html", records=records)
-
+    if 'mobile' in ua:
+        return render_template("dashboard/student_attendance_mobile.html", records=records)
+    else:
+        return render_template("dashboard/student_attendance.html", records=records)
 
 @app.route("/teacher/marks", methods=["GET", "POST"])
 @login_required
@@ -294,9 +334,11 @@ def teacher_marks():
         db.session.commit()
         flash("Marks submitted successfully!", "success")
         return redirect("/teacher/marks")
-
-    return render_template("dashboard/teacher_marks.html", students=students)
-
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/teacher_marks_mobile.html", students=students)
+    else:
+        return render_template("dashboard/teacher_marks.html", students=students)
 
 
 @app.route("/student/marks")
@@ -306,7 +348,12 @@ def student_marks():
         return "Access Denied", 403
 
     records = Marks.query.filter_by(student_id=current_user.id).all()
-    return render_template("dashboard/student_marks.html", records=records)
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/student_marks_mobile.html", records=records)
+    else:
+        return render_template("dashboard/student_marks.html", records=records)
+
 def month_index(month):
     order = ["July","August","September","October","November","December",
              "January","February","March"]
@@ -350,16 +397,13 @@ def teacher_fees():
         })
 
     classes = sorted(set(s.class_name for s in User.query.filter_by(role="student").all()))
-
-    return render_template("dashboard/teacher_fee_list.html", data=data, classes=classes, current_class=class_filter)
-
-
-import csv
-from flask import Response
-
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/teacher_fee_list_mobile.html", data=data, classes=classes, current_class=class_filter)
+    else:
+        return render_template("dashboard/teacher_fee_list.html", data=data, classes=classes)
 
 import csv
-import io
 from flask import Response
 
 @app.route("/teacher/fees/export")
@@ -398,7 +442,7 @@ def export_pending():
             ])
 
     output.seek(0)
-
+    ua = request.user_agent.string.lower()
     return Response(
         output.getvalue(),
         mimetype="text/csv",
@@ -417,8 +461,11 @@ def single_student_fee(student_id):
 
     # Optional: hide months before join month
     records = [r for r in records if month_index(r.month) >= month_index(student.date_joined.strftime("%B"))]
-
-    return render_template("dashboard/teacher_single_fee.html", student=student, records=records)
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/teacher_single_fee_mobile.html", student=student, records=records)
+    else:
+        return render_template("dashboard/teacher_single_fee.html", student=student, records=records)
 
 @app.route("/teacher/fees/update", methods=["POST"])
 @login_required
@@ -445,8 +492,12 @@ from datetime import datetime
 def student_profile():
     if current_user.role != "student":
         return "Access Denied", 403
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/student_profile_mobile.html", student=current_user)
+    else:
+        return render_template("dashboard/student_profile.html", student=current_user)
 
-    return render_template("dashboard/student_profile.html", student=current_user)
 @app.route("/student/fees", methods=["GET", "POST"])
 @login_required
 def student_fees():
@@ -478,14 +529,21 @@ def student_fees():
 
     total_pending = sum(1 for r in valid_records if r.status == "Pending") * current_user.monthly_fee
     total_paid = sum(1 for r in valid_records if r.status == "Paid") * current_user.monthly_fee
-
-    return render_template("dashboard/student_fees.html",
-                           records=valid_records,
-                           monthly_fee=current_user.monthly_fee,
-                           total_pending=total_pending,
-                           total_paid=total_paid,
-                           first_pending=first_pending)
-
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/student_fees_mobile.html",
+                               records=valid_records,
+                               monthly_fee=current_user.monthly_fee,
+                               total_pending=total_pending,
+                               total_paid=total_paid,
+                               first_pending=first_pending)
+    else:
+        return render_template("dashboard/student_fees.html",
+                               records=valid_records,
+                               monthly_fee=current_user.monthly_fee,
+                               total_pending=total_pending,
+                               total_paid=total_paid,
+                               first_pending=first_pending)
 
 from reportlab.pdfgen import canvas
 from flask import send_file
@@ -567,10 +625,16 @@ def add_student():
 
         generated_enrollment = enrollment
         generated_password = plain_password  # Show student password once
-
-    return render_template("dashboard/add_student.html",
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/add_student_mobile.html",
                            enrollment=generated_enrollment,
                            password=generated_password)
+    else:
+        return render_template("dashboard/add_student.html",
+                               enrollment=generated_enrollment,
+                               password=generated_password)
+
 
 @app.route("/teacher/students")
 @login_required
@@ -601,14 +665,24 @@ def student_list():
 
     # Collect unique class list for dropdown
     classes = [row.class_name for row in User.query.filter_by(role="student").distinct(User.class_name).all()]
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template(
+            "dashboard/student_list_mobile.html",
+            students=students,
+            classes=classes,
+            selected_class=class_filter,
+            search_query=search_query
+        )
+    else:
+        return render_template(
+            "dashboard/student_list.html",
+            students=students,
+            classes=classes,
+            selected_class=class_filter,
+            search_query=search_query
+        )
 
-    return render_template(
-        "dashboard/student_list.html",
-        students=students,
-        classes=classes,
-        selected_class=class_filter,
-        search_query=search_query
-    )
 import pandas as pd
 from flask import make_response
 
@@ -710,8 +784,11 @@ def edit_student(student_id):
         flash("Student details updated successfully!", "success")
         return redirect("/teacher/students")
 
-    return render_template("dashboard/edit_student.html", student=student)
-
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("dashboard/edit_student_mobile.html", student=student)
+    else:
+        return render_template("dashboard/edit_student.html", student=student)
 
 
 @app.route("/teacher/delete_student/<int:student_id>")
@@ -740,18 +817,33 @@ from models import Timetable
 @app.route("/teacher/timetable", methods=["GET", "POST"])
 @login_required
 def teacher_timetable():
+
     if current_user.role != "teacher":
         return "Access Denied", 403
 
     classes = sorted(set([s.class_name for s in User.query.filter_by(role="student").all()]))
 
     selected_class = request.args.get("class")
+    ua = request.user_agent.string.lower()
 
-    records = []
-    if selected_class:
-        records = Timetable.query.filter_by(class_name=selected_class).order_by(Timetable.day).all()
+    # Fetch only when class selected
+    records = Timetable.query.filter_by(class_name=selected_class).order_by(Timetable.day).all() if selected_class else []
 
-    return render_template("dashboard/teacher_timetable.html", classes=classes, selected_class=selected_class, records=records)
+    # --- Mobile View
+    if "mobile" in ua:
+        return render_template(
+            "dashboard/teacher_timetable_mobile.html",
+            classes=classes, selected_class=selected_class, records=records
+        )
+
+    # --- Desktop View (currently you are using mobile UI for both)
+    return render_template(
+        "dashboard/teacher_timetable.html",
+        classes=classes, selected_class=selected_class, records=records
+    )
+
+
+
 @app.route("/teacher/timetable/add", methods=["POST"])
 @login_required
 def add_timetable():
@@ -769,22 +861,6 @@ def add_timetable():
 
     return redirect(f"/teacher/timetable?class={class_name}")
 
-# ------------ Edit Timetable Entry ------------
-@app.route("/teacher/timetable/edit/<int:id>", methods=["GET", "POST"])
-@login_required
-def edit_timetable(id):
-    entry = Timetable.query.get_or_404(id)
-
-    if request.method == "POST":
-        entry.day = request.form.get("day")
-        entry.time = request.form.get("time")
-        entry.subject = request.form.get("subject")
-
-        db.session.commit()
-        flash("Timetable updated successfully!", "success")
-        return redirect("/teacher/timetable")
-
-    return render_template("dashboard/edit_timetable.html", entry=entry)
 
 
 # ------------ Delete Timetable Entry ------------
@@ -801,18 +877,14 @@ def delete_timetable(id):
 
 
 
-# ------------ Student View Timetable ------------
-@app.route("/student/timetable")
-@login_required
-def student_timetable():
-    records = Timetable.query.filter_by(class_name=current_user.class_name).all()
-    return render_template("dashboard/student_timetable.html", records=records)
+
 
 
 from random import choice
 
 @app.route("/timetable")
 def view_timetable_classes():
+    ua = request.user_agent.string.lower()
     classes = sorted(list(set([s.class_name for s in User.query.filter_by(role="student").all()])))
 
     # List of rotating quotes
@@ -827,34 +899,45 @@ def view_timetable_classes():
     ]
 
     random_quote = choice(quotes)
-
-    return render_template("public/timetable_classes.html", classes=classes, quote=random_quote)
-
+    if "mobile" in ua:
+        return render_template("public/timetable_classes_mobile.html", classes=classes, quote=random_quote)
+    else:
+        return render_template("public/timetable_classes.html", classes=classes, quote=random_quote)
 
 
 @app.route("/timetable/<class_name>")
 def view_class_timetable(class_name):
-    records = Timetable.query.filter_by(class_name=class_name).order_by(Timetable.day).all()
-    return render_template("public/timetable_view.html", class_name=class_name, records=records)
+    ua = request.user_agent.string.lower()
 
+    records = Timetable.query.filter_by(class_name=class_name).order_by(Timetable.day).all()
+    if 'mobile' in ua:
+        return render_template("public/timetable_view_mobile.html", class_name=class_name, records=records)
+    else:
+        return render_template("public/timetable_view.html", class_name=class_name, records=records)
 @app.route("/classes")
 def classes():
-    return render_template("public/classes.html")
+    ua = request.user_agent.string.lower()
+    if 'mobile' in ua:
+        return render_template("public/classes_mobile.html")
+    else:
+        return render_template("public/classes.html")
 
 import os
 from flask import send_from_directory
 
 @app.route("/gallery")
 def gallery():
+    ua = request.user_agent.string.lower()
     folder_path = os.path.join(app.static_folder, "picnic")
 
     # allowed image formats
     allowed_ext = ('.png', '.jpg', '.jpeg', '.webp')
 
     images = [f"picnic/{img}" for img in os.listdir(folder_path) if img.lower().endswith(allowed_ext)]
-
-    return render_template("public/gallery.html", images=sorted(images))
-
+    if 'mobile' in ua:
+        return render_template("public/gallery_mobile.html", images=sorted(images))
+    else:
+        return render_template("public/gallery.html", images=sorted(images))
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
