@@ -1,0 +1,41 @@
+<!-- navigation.html -->
+
+<!-- ==== NAVIGATION STYLES (INLINE) ==== -->
+<style>
+  body { font-family:'Poppins',sans-serif; overflow-x:hidden;}
+  a { text-decoration:none !important;}
+
+  .header { background:#fff; padding:10px 0; box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+  .logo img { height:65px; margin-right:10px;}
+  .brand-title { font-size:28px; font-weight:700; font-family:'Playfair Display',serif; color:#222;}
+
+  .navmenu a{
+      font-weight:500; color:#4a4a4a; padding:8px 12px; border-radius:8px;
+      transition:.3s; margin-left:6px;
+  }
+  .navmenu a:hover, .navmenu .active{
+      background:#f4c430; color:#fff!important;
+  }
+</style>
+
+<!-- ==== HEADER-NAVBAR HTML ==== -->
+<header class="header sticky-top">
+  <div class="container d-flex align-items-center" style="display:flex; align-items:center; justify-content:space-between;">
+
+    <a href="/templates/public" class="logo d-flex align-items-center" style="display:flex; align-items:center;">
+      <img src="{{ url_for('static', filename='imgs/logo.png') }}" alt="Logo">
+      <span class="brand-title">Saraswati Group Tuition Classes</span>
+    </a>
+
+    <nav class="navmenu" style="display:flex; align-items:center; gap:10px;">
+      <a href="/templates/public" class="{% if page=='home' %}active{% endif %}">Home</a>
+      <a href="/about"   class="{% if page=='about' %}active{% endif %}">About</a>
+      <a href="/classes" class="{% if page=='classes' %}active{% endif %}">Courses</a>
+      <a href="/timetable" class="{% if page=='timetable' %}active{% endif %}">Timetable</a>
+      <a href="/gallery" class="{% if page=='gallery' %}active{% endif %}">Gallery</a>
+      <a href="/contact" class="{% if page=='contact' %}active{% endif %}">Contact</a>
+      <a href="/login"   class="{% if page=='login' %}active{% endif %}"><b>Login</b></a>
+    </nav>
+
+  </div>
+</header>

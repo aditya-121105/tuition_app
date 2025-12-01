@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ class_name }} Timetable</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{text-decoration:none!important;}
+body{
+    font-family:'Poppins',sans-serif;background:#fff9e6;
+    overflow-x:hidden;margin:0;padding:0;
+    animation:fadeIn .6s ease;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+
+/* ====================== HEADER ====================== */
+.header-box{
+    text-align:center;background:#ffd44d;padding:35px 18px;
+    border-bottom-left-radius:30px;border-bottom-right-radius:30px;
+}
+.header-box h2{
+    font-size:22px;font-weight:700;margin:0;color:#000;
+}
+.header-box span{font-size:13px;color:#333;}
+
+
+/* ====================== DAY BLOCK ====================== */
+.day-card{
+    background:white;margin:14px 14px;border-radius:14px;
+    padding:14px;border-left:6px solid #f4c430;
+    box-shadow:0 4px 12px rgba(0,0,0,.06);
+    animation:pop .5s ease;
+}
+@keyframes pop{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+
+/* Day Title */
+.day-header{
+    font-size:16px;font-weight:700;color:#333;
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:7px;
+}
+
+/* Subject rows */
+.sub-row{
+    font-size:14px;margin-left:10px;margin-bottom:5px;
+}
+
+/* Subject Chips */
+.sub-badge{
+    background:#fff4a7;border-radius:8px;
+    padding:3px 8px;color:#6b4e00;font-weight:600;
+    font-size:13px;margin-right:6px;
+}
+
+/* ====================== EMPTY NOTICE ====================== */
+.empty-box{
+    background:#fff3cd;padding:20px;margin:20px;
+    border-radius:14px;border-left:6px solid #d39e23;
+    text-align:center;font-weight:600;
+}
+
+
+/* ====================== BOTTOM BUTTONS ====================== */
+.bottom-actions{
+    margin-top:30px;text-align:center;margin-bottom:20px;
+}
+.back-btn{
+    background:none;border:1px solid #000;border-radius:25px;
+    padding:9px 22px;margin-right:8px;font-weight:600;font-size:14px;
+}
+.home-btn{
+    background:#f4c430;border-radius:25px;font-size:14px;
+    padding:10px 25px;font-weight:700;color:#000;
+}
+.home-btn:hover{background:#dfa522;}
+</style>
+</head>
+
+
+<body>
+
+<!-- HEADER -->
+<div class="header-box">
+    <h2><i class="bi bi-calendar-check"></i> {{ class_name }}</h2>
+    <span>Weekly Timetable • Smart View</span>
+</div>
+
+
+<!-- CONTENT SECTION -->
+{% if records %}
+{% set days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] %}
+
+{% for d in days %}
+{% set day_records = records | selectattr("day","equalto",d) | list %}
+
+{% if day_records %}
+<div class="day-card">
+    <p class="day-header"><i class="bi bi-clock-history text-warning"></i> {{ d }}</p>
+
+    {% for row in day_records %}
+    <div class="sub-row">
+        <span class="sub-badge">{{ row.subject }}</span> {{ row.time }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endfor %}
+{% else %}
+<div class="empty-box">
+    🔔 Timetable not uploaded yet. Check again soon.
+</div>
+{% endif %}
+
+
+<!-- BUTTONS -->
+<div class="bottom-actions">
+    <a href="/timetable" class="back-btn">⬅ Back</a>
+    <a href="/" class="home-btn">🏠 Home</a>
+</div>
+
+</body>
+</html>

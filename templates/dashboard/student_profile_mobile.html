@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Profile | Student</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+body{
+    font-family:'Poppins',sans-serif;
+    margin:0;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:25px 10px;
+}
+
+/* Glass Profile Card */
+.profile-box{
+    width:100%;
+    max-width:560px;
+    background:rgba(255,255,255,0.90);
+    border-radius:22px;
+    padding:28px 22px;
+    text-align:center;
+    box-shadow:0 12px 35px rgba(0,0,0,.32);
+    backdrop-filter:blur(12px);
+    animation:fadeIn .8s ease;
+}
+
+/* Header */
+.profile-box h2{
+    font-size:26px;
+    font-weight:700;
+    margin:0;
+}
+.profile-box h2 i{
+    font-size:32px;
+    margin-right:6px;
+}
+
+/* Big Avatar */
+.avatar{
+    width:110px;
+    height:110px;
+    margin:18px auto;
+    border-radius:50%;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:55px;
+    color:#764ba2;
+    box-shadow:0 6px 25px rgba(0,0,0,.18);
+}
+
+/* Information List */
+.info{
+    width:100%;
+    margin-top:15px;
+}
+.info-item{
+    background:white;
+    margin:10px 0;
+    padding:14px 14px;
+    border-radius:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 15px rgba(0,0,0,.10);
+    font-size:16px;
+}
+.info-item i{
+    color:#764ba2;
+    font-size:18px;
+    margin-right:8px;
+}
+.label{
+    font-weight:600;
+    display:flex;
+    align-items:center;
+}
+.value{
+    font-weight:500;
+    text-transform:capitalize;
+}
+
+/* Back Button */
+.btn-back{
+    margin-top:25px;
+    display:inline-block;
+    padding:12px 24px;
+    background:#fff;
+    color:#764ba2;
+    font-weight:600;
+    border-radius:12px;
+    text-decoration:none;
+    box-shadow:0 5px 22px rgba(0,0,0,.22);
+    transition:.3s;
+}
+.btn-back:hover{
+    transform:translateY(-4px);
+    background:#f4ebff;
+}
+
+/* Animations */
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(12px);}
+    to{opacity:1;}
+}
+
+/* Mobile Fix */
+@media(max-width:480px){
+    .profile-box{padding:22px;}
+    .info-item{font-size:14px; padding:12px;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="profile-box">
+
+    <h2><i class="fas fa-user"></i> My Profile</h2>
+
+    <div class="avatar"><i class="fas fa-user"></i></div>
+
+    <div class="info">
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-user"></i> Name</span>
+            <span class="value">{{ student.name }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-id-badge"></i> Enrollment No</span>
+            <span class="value">{{ student.enrollment_no }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-book"></i> Class</span>
+            <span class="value">{{ student.class_name }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-wallet"></i> Monthly Fee</span>
+            <span class="value">₹{{ student.monthly_fee }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-phone"></i> Parent Phone</span>
+            <span class="value">{{ student.parent_phone }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-mobile-alt"></i> Student Phone</span>
+            <span class="value">{{ student.student_phone }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label"><i class="fas fa-map-marker-alt"></i> Village</span>
+            <span class="value">{{ student.village }}</span>
+        </div>
+
+    </div>
+
+    <a href="/student/dashboard" class="btn-back"><i class="fas fa-arrow-left"></i> Back</a>
+
+</div>
+
+</body>
+</html>

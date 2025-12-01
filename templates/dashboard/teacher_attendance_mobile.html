@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>📋 Attendance — Teacher Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- Base ---------- */
+body{
+    font-family:"Poppins",sans-serif;
+    background:#eef3ff;
+    margin:0;
+    overflow-x:hidden;
+}
+
+/* ---------- NAVBAR ---------- */
+.navbar{
+    background:#1B263B;
+    color:white;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.navbar span{font-size:19px;font-weight:600;}
+.navbar a{
+    margin-left:auto;
+    text-decoration:none;
+    background:#d9534f;
+    padding:7px 14px;
+    border-radius:8px;
+    font-size:14px;
+    color:white;
+}
+.navbar a:last-child{background:#b90e0e;margin-left:10px;}
+.navbar a:hover{opacity:.85}
+
+/* ---------- MAIN CARD ---------- */
+.container-box{
+    background:white;
+    width:92%;
+    max-width:1200px;
+    margin:30px auto;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 6px 25px rgba(0,0,0,.08);
+    animation:fadeIn .6s;
+}
+
+/* ---------- Heading Row ---------- */
+.header-flex{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+}
+.header-flex h3{margin:0;font-weight:700;color:#1a2942;font-size:22px;}
+
+select, input{
+    padding:9px 12px;
+    border-radius:8px;
+    border:2px solid #d8d8d8;
+    font-size:14px;
+}
+select:focus,input:focus{border-color:#4a81ff;outline:none;}
+
+/* ---------- Class Title ---------- */
+.class-title{
+    background:#4a81ff;
+    color:white;
+    padding:10px 14px;
+    border-radius:10px;
+    margin-top:22px;
+    font-weight:600;
+    font-size:16px;
+    display:inline-block;
+}
+
+/* ---------- Table ---------- */
+table{
+    width:100%;
+    margin-top:15px;
+    border-collapse:collapse;
+    font-size:15px;
+}
+th{
+    background:#101c30;
+    color:white;
+    padding:12px 8px;
+}
+td{
+    padding:10px 8px;
+    border-bottom:1px solid #e6e6e6;
+}
+tr:hover{background:#f2f7ff;}
+
+/* ---------- Buttons ---------- */
+.btn-submit{
+    background:#1B263B;
+    color:white;
+    padding:12px 22px;
+    border:none;
+    border-radius:10px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+.btn-submit:hover{background:#4a81ff;}
+
+.back-btn{
+    background:#d9534f;
+    color:white;
+    padding:12px 18px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+}
+.back-btn:hover{opacity:.9;}
+
+/* ---------- Animation ---------- */
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;}
+}
+
+/* ---------- Mobile Responsive ---------- */
+@media(max-width:768px){
+    .container-box{
+        width:94%;
+        padding:18px;
+    }
+    table,thead,tbody,tr,td,th{display:block;width:100%;}
+    tr{margin-bottom:12px;background:#fff;border-radius:10px;padding:10px;}
+    th{display:none;}
+    td{padding:8px 6px;}
+    td:nth-child(1)::before{content:"#  ";font-weight:600;}
+    td:nth-child(2)::before{content:"Name: ";font-weight:600;}
+    td:nth-child(3)::before{content:"Enroll: ";font-weight:600;}
+    td:nth-child(4)::before{content:"Status: ";font-weight:600;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <span>📋 Attendance Manager</span>
+    <a href="/teacher/dashboard">Dashboard</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="container-box">
+
+  <div class="header-flex">
+      <h3>📅 Mark Attendance</h3>
+
+      <form method="GET" action="/teacher/attendance">
+          <select name="class" onchange="this.form.submit()">
+              <option value="all" {% if selected_class == 'all' %}selected{% endif %}>All Classes</option>
+              {% for c in classes %}
+              <option value="{{ c }}" {% if selected_class == c %}selected{% endif %}>Class {{ c }}</option>
+              {% endfor %}
+          </select>
+      </form>
+  </div>
+
+
+  <form method="POST">
+      <label><b>Select Date:</b></label>
+      <input type="date" name="date" required style="margin-bottom:15px;width:200px;">
+
+
+      {% if selected_class == "all" %}
+          {% set grouped = {} %}
+          {% for s in students %}
+              {% set grouped = grouped.update({ s.class_name : (grouped.get(s.class_name,[]) + [s]) }) or grouped %}
+          {% endfor %}
+
+          {% for class_name, group in grouped.items() %}
+              <div class="class-title">📚 Class {{ class_name }}</div>
+
+              <table>
+                <thead><tr><th>#</th><th>Name</th><th>Enrollment</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for s in group %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.enrollment_no }}</td>
+                        <td>
+                            <select name="status_{{ s.id }}">
+                                <option>Present</option>
+                                <option>Absent</option>
+                                <option>Leave</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+          {% endfor %}
+
+      {% else %}
+
+          <div class="class-title">📚 Class {{ selected_class }}</div>
+
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Enrollment</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for s in students %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s.name }}</td>
+                <td>{{ s.enrollment_no }}</td>
+                <td>
+                    <select name="status_{{ s.id }}">
+                      <option>Present</option>
+                      <option>Absent</option>
+                      <option>Leave</option>
+                    </select>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+      {% endif %}
+
+      <div style="margin-top:25px;display:flex;justify-content:space-between;">
+          <a href="/teacher/dashboard" class="back-btn">⬅ Back</a>
+          <button type="submit" class="btn-submit">💾 Save Attendance</button>
+      </div>
+  </form>
+</div>
+
+</body>
+</html>

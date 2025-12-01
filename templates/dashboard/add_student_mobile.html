@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Student • Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    font-family:"Poppins",sans-serif;
+    background:linear-gradient(120deg,#d8eaff,#f7f7ff,#e3f3ff);
+    margin:0;
+    padding:0;
+    overflow-x:hidden !important;   /* ← prevents scrolling */
+    animation:bgFade 6s infinite alternate ease-in-out;
+}
+@keyframes bgFade{
+    0%{background:#e8f1ff;}
+    100%{background:#ddecff;}
+}
+
+/* TOP NAVBAR */
+.navbar{
+    background:#1E2A47;
+    color:white;
+    padding:15px 18px;
+    font-size:19px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+}
+.navbar i{
+    margin-right:10px;
+}
+.navbar a{
+    margin-left:auto;
+    background:#d9534f;
+    padding:7px 16px;
+    border-radius:6px;
+    color:white;
+    text-decoration:none;
+    transition:.35s;
+}
+.navbar a:hover{
+    background:#b64541;
+    transform:scale(1.05);
+}
+
+/* MAIN CARD */
+.box{
+    background:white;
+    width:100%;
+    max-width:430px;
+    margin:40px auto;
+    padding:26px;
+    border-radius:16px;
+    box-shadow:0 8px 28px rgba(0,0,0,0.15);
+    animation:pop .6s ease;
+    box-sizing:border-box;            /* ← prevents width overflow */
+}
+@keyframes pop{
+    from{opacity:0;transform:scale(.92);}
+    to{opacity:1;transform:scale(1);}
+}
+
+h2{
+    text-align:center;
+    font-size:23px;
+    font-weight:600;
+    margin-bottom:22px;
+}
+
+/* INPUT FIELDS */
+.field{
+    width:100%;
+    margin-bottom:18px;
+    position:relative;
+}
+.field input,.field select{
+    width:100%;
+    padding:14px 12px;
+    border-radius:10px;
+    border:2px solid #cfcfcf;
+    font-size:15px;
+    background:transparent;
+    outline:none;
+    box-sizing:border-box;
+    transition:.35s;
+}
+.field label{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    background:white;
+    padding:0 6px;
+    color:#777;
+    pointer-events:none;
+    transition:.3s;
+}
+.field input:focus,.field select:focus{
+    border-color:#4d9cff;
+    box-shadow:0 0 12px rgba(77,156,255,.45);
+}
+.field input:focus+label,
+.field input:not(:placeholder-shown)+label,
+.field select:focus+label{
+    top:-6px;
+    font-size:12px;
+    color:#1066ff;
+}
+
+/* SUCCESS BOX */
+.success{
+    background:#dbffe4;
+    padding:16px;
+    border-left:6px solid #28a745;
+    border-radius:10px;
+    margin-bottom:15px;
+    animation:slide .6s ease;
+}
+@keyframes slide{
+    from{opacity:0;transform:translateX(-15px);}
+    to{opacity:1;}
+}
+
+/* BUTTONS */
+.btn{
+    width:100%;
+    padding:13px;
+    font-size:16px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    transition:.35s;
+}
+.btn-success{
+    background:#28a745;color:white;font-weight:600;
+}
+.btn-success:hover{
+    background:#1f8c39;transform:scale(1.04);
+}
+.btn-secondary{
+    background:#6c757d;color:white;margin-top:10px;
+}
+.btn-secondary:hover{
+    background:#505960;transform:scale(1.04);
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <i class="fa-solid fa-user-plus"></i> Add Student
+    <a href="/teacher/dashboard">Back</a>
+</div>
+
+
+<!-- MAIN FORM BOX -->
+<div class="box">
+
+    {% if enrollment %}
+    <div class="success">
+        🎉 <b>Student Added Successfully</b><br>
+        Enrollment: <b>{{ enrollment }}</b><br>
+        Password: <b>{{ password }}</b>
+    </div>
+    {% endif %}
+
+    <h2>Register New Student</h2>
+
+    <form method="POST">
+
+        <div class="field">
+            <input type="text" name="name" required placeholder=" ">
+            <label>Student Name</label>
+        </div>
+
+        <div class="field">
+            <select name="class" required>
+                <option value="">Select Class</option>
+                {% for i in range(1,13) %}
+                <option value="Class {{ i }}">Class {{ i }}</option>
+                {% endfor %}
+            </select>
+            <label>Class</label>
+        </div>
+
+        <div class="field">
+            <input type="number" name="monthly_fee" required placeholder=" ">
+            <label>Monthly Fee (₹)</label>
+        </div>
+
+        <div class="field">
+            <input type="text" name="parent_phone" required placeholder=" ">
+            <label>Parent Mobile Number</label>
+        </div>
+
+        <div class="field">
+            <input type="text" name="student_phone" placeholder=" ">
+            <label>Student Mobile Number</label>
+        </div>
+
+        <div class="field">
+            <input type="text" name="village" placeholder=" ">
+            <label>Village</label>
+        </div>
+
+        <button class="btn btn-success">Add Student</button>
+        <a href="/teacher/dashboard"><button type="button" class="btn btn-secondary">Cancel</button></a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

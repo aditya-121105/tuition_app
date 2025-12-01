@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Profile | Student</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- AdminLTE + Icons -->
+<link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+
+<style>
+
+    body{
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg,#89f7fe,#66a6ff);
+        background-attachment: fixed;
+        min-height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:flex-start;
+        padding-top:50px;
+    }
+
+    .profile-box{
+        width:620px;
+        background: rgba(255,255,255,0.92);
+        border-radius:18px;
+        padding:30px 35px;
+        box-shadow:0 10px 35px rgba(0,0,0,0.25);
+        backdrop-filter:blur(10px);
+        animation: fadeIn .8s ease;
+    }
+
+    h2{
+        font-weight:700;
+        text-align:center;
+        margin-bottom:25px;
+    }
+
+    .table th{
+        width:40%;
+        font-weight:600;
+        color:#333;
+    }
+
+    .table td{
+        font-size:16px;
+        font-weight:500;
+        color:#000;
+        text-transform:capitalize;
+    }
+
+    .table-row{
+        transition:.25s;
+    }
+
+    .table-row:hover{
+        background:rgba(0,0,0,0.04);
+    }
+
+    .btn-back{
+        margin-top:18px;
+        background:#16222A;
+        color:white;
+        border-radius:10px;
+        padding:10px 18px;
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        width:150px;
+        transition:.3s;
+    }
+
+    .btn-back:hover{
+        background:#000;
+        transform:translateY(-2px);
+        box-shadow:0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    @keyframes fadeIn{
+        from{opacity:0;transform:translateY(-10px);}
+        to{opacity:1;transform:translateY(0);}
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="profile-box">
+
+    <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+
+    <table class="table table-borderless">
+
+        <tr class="table-row">
+            <th><i class="fas fa-user"></i> Name:</th>
+            <td>{{ student.name }}</td>
+        </tr>
+
+        <tr class="table-row">
+            <th><i class="fas fa-id-card"></i> Enrollment No:</th>
+            <td>{{ student.enrollment_no }}</td>
+        </tr>
+
+        <tr class="table-row">
+            <th><i class="fas fa-book"></i> Class:</th>
+            <td>{{ student.class_name }}</td>
+        </tr>
+
+        <tr class="table-row">
+            <th><i class="fas fa-rupee-sign"></i> Monthly Fee:</th>
+            <td>₹{{ student.monthly_fee }}</td>
+        </tr>
+
+        <tr class="table-row">
+            <th><i class="fas fa-phone"></i> Parent Phone:</th>
+            <td>{{ student.parent_phone }}</td>
+        </tr>
+
+        <tr class="table-row">
+            <th><i class="fas fa-mobile"></i> Student Phone:</th>
+            <td>{{ student.student_phone }}</td>
+        </tr>
+
+        <tr class="table-row">
+            <th><i class="fas fa-map-marker-alt"></i> Village:</th>
+            <td>{{ student.village }}</td>
+        </tr>
+
+    </table>
+
+    <a href="/student/dashboard" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
+</div>
+
+</body>
+</html>

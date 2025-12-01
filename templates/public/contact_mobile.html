@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact • Saraswati Tuition</title>
+<link rel="icon" href="{{ url_for('static', filename='imgs/logo.png') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* GLOBAL */
+*{text-decoration:none!important;}
+body{
+  font-family:'Poppins',sans-serif;background:#fff9e6;
+  overflow-x:hidden;margin:0;animation:fadeIn .7s ease;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* ============= NAV TOP ============= */
+.mobile-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 15px;background:#fff;
+  border-bottom:3px solid #f4c430;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+.mobile-header img{height:46px;}
+.mobile-title{font-size:19px;font-weight:700;}
+.menu-btn{font-size:28px;cursor:pointer;}
+
+#mobileMenu{
+  display:none;background:white;padding:10px;border-bottom:3px solid #f4c430;
+}
+#mobileMenu a{
+  display:block;padding:10px;margin:3px 0;font-size:16px;color:#111;
+  border-radius:6px;font-weight:500;
+}
+#mobileMenu a:hover{background:#f4c430;color:white;}
+
+/* ============= HERO ============= */
+.hero{
+  text-align:center;background:#ffd54a;padding:35px 18px;
+  border-bottom-left-radius:28px;border-bottom-right-radius:28px;
+  color:#000;
+}
+.hero h1{font-size:23px;font-weight:700;margin-bottom:4px;}
+.hero p{font-size:13px;color:#333;margin-top:-3px;}
+
+/* ============= FORM BOX ============= */
+.form-box,.info-box{
+  background:white;padding:20px;border-radius:14px;
+  margin:16px;box-shadow:0 4px 14px rgba(0,0,0,.08);
+  animation:floatIn .6s ease;
+}
+@keyframes floatIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* form fields */
+input,textarea{
+  border-radius:10px!important;border:2px solid #eee!important;
+  font-size:14px;padding:10px;transition:.3s;
+}
+input:focus,textarea:focus{
+  border-color:#f4c430!important;box-shadow:0 0 6px #f4c43055!important;
+}
+
+.submit-btn{
+  width:100%;padding:12px;font-size:16px;font-weight:600;
+  border-radius:30px;border:none;background:#f4c430;
+}
+.submit-btn:active{transform:scale(.97);}
+
+/* ============= INFO SECTION ============= */
+.info-box p{
+  display:flex;gap:10px;margin-bottom:10px;font-size:14px;
+}
+.info-box i{font-size:18px;color:#f4c430;}
+
+/* MAP */
+.map-container{
+  margin:10px;border-radius:14px;overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);
+}
+.map-container iframe{
+  width:100%;height:240px;border:none;
+}
+
+/* WHATSAPP FLOAT */
+.whatsapp-btn{
+  position:fixed;bottom:22px;right:22px;
+  background:#25D366;height:60px;width:60px;
+  border-radius:50%;display:flex;justify-content:center;align-items:center;
+  color:white;font-size:30px;box-shadow:0 8px 18px rgba(0,0,0,.25);
+}
+.whatsapp-btn:active{transform:scale(.92);}
+
+/* FOOTER */
+footer{
+  text-align:center;background:#222;color:white;
+  padding:14px;margin-top:25px;font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="mobile-header">
+  <span class="mobile-title">Contact</span>
+  <img src="{{ url_for('static', filename='imgs/logo.png') }}">
+  <i class="bi bi-list menu-btn" onclick="toggleNav()"></i>
+</div>
+
+<div id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/about">About</a>
+  <a href="/classes">Courses</a>
+  <a href="/timetable">Timetable</a>
+  <a href="/gallery">Gallery</a>
+  <a href="/contact" class="active">Contact</a>
+  <a href="/login"><b>Login</b></a>
+</div>
+
+<script>
+function toggleNav(){
+   let m=document.getElementById("mobileMenu");
+   m.style.display = (m.style.display=="block") ? "none":"block";
+}
+</script>
+
+
+<!-- HERO -->
+<section class="hero">
+  <h1>📞 Contact Us</h1>
+  <p>We respond quickly — Message anytime</p>
+</section>
+
+
+<!-- FORM -->
+<div class="form-box">
+  <h4>Send Message</h4>
+  <form action="/contact" method="POST">
+    <input class="form-control mb-2" name="name" placeholder="Your Name" required>
+    <input class="form-control mb-2" name="email" placeholder="Your Email" required>
+    <input class="form-control mb-2" name="phone" placeholder="Mobile Number" required>
+    <textarea class="form-control mb-2" rows="4" name="message" placeholder="Your Message" required></textarea>
+    <button class="submit-btn">Send Message</button>
+  </form>
+</div>
+
+<!-- INFO -->
+<div class="info-box">
+  <h4>Reach Us</h4>
+  <p><i class="bi bi-telephone-fill"></i> +91 8302613931</p>
+  <p><i class="bi bi-envelope-paper-fill"></i> info@saraswatituition.com</p>
+  <p><i class="bi bi-geo-alt-fill"></i> Near Kanu Agro Center, Kumarkhan, Gujarat 382150</p>
+</div>
+
+<!-- MAP -->
+<div class="map-container">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.105116647517!2d72.01782327536516!3d22.909493379253163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395ead6507bf9495%3A0xb1be7a4fa8702e56!2sSaraswati%20Group%20Tuition%20Classes!5e0!3m2!1sen!2sin!4v1764059602573!5m2!1sen!2sin"></iframe>
+</div>
+
+<!-- WHATSAPP -->
+<a class="whatsapp-btn" href="https://wa.me/8401683122?text=Hello,%20I%20want%20to%20join%20your%20classes" target="_blank">
+  <i class="bi bi-whatsapp"></i>
+</a>
+
+<footer>© 2025 Saraswati Group Tuition Classes</footer>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Timetable • Saraswati Tuition</title>
+<link rel="icon" href="{{ url_for('static', filename='imgs/logo.png') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+<style>
+/* GLOBAL */
+*{text-decoration:none!important;}
+body{
+    font-family:'Poppins',sans-serif;background:#fff9e6;
+    overflow-x:hidden;animation:fadeIn .7s ease;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* HEADER */
+.mobile-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 15px;background:#fff;
+    border-bottom:3px solid #f4c430;box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+.mobile-header img{height:46px;}
+.mobile-title{font-size:20px;font-weight:600;}
+.menu-btn{font-size:30px;cursor:pointer;}
+
+#mobileMenu{
+    display:none;background:white;padding:12px;border-bottom:3px solid #f4c430;
+}
+#mobileMenu a{
+    display:block;padding:10px;margin:3px 0;font-size:16px;border-radius:6px;color:black;
+}
+#mobileMenu a:hover{background:#f4c430;color:white;}
+
+/* HERO */
+.hero{
+    background:#ffd54a;padding:42px 25px;text-align:center;color:#000;
+    border-bottom-left-radius:30px;border-bottom-right-radius:30px;
+}
+.hero h1{font-size:24px;font-weight:700;margin-bottom:4px;}
+.hero p{font-size:14px;color:#333;}
+
+/* ░░░ CARD LAYOUT – POLISHED & COMPACT ░░░ */
+.class-card{
+    background:white;padding:14px 18px;border-radius:14px;
+    margin:10px 14px;font-size:15px;font-weight:600;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    border-left:6px solid #d6d6d6;
+    transition:.28s;position:relative;overflow:hidden;
+}
+
+/* AVAILABLE — GREEN PREMIUM */
+.class-card.available{
+    border-left:6px solid #32d96c;
+    background:linear-gradient(135deg,#e9ffe9,#e3ffe6);
+    color:#0b7a32;
+}
+.class-card.available:hover{
+    transform:translateY(-4px);
+    box-shadow:0 6px 20px rgba(41,243,105,.28);
+}
+
+/* RIPPLE */
+.class-card.available::after{
+    content:"";position:absolute;inset:0;margin:auto;width:20px;height:20px;
+    background:rgba(41,243,105,.25);border-radius:50%;transform:scale(0);
+    opacity:0;transition:.6s;
+}
+.class-card.available:hover::after{transform:scale(14);opacity:1;}
+
+/* UNAVAILABLE */
+.class-card.disabled{
+    background:#f2f2f2;color:#7b7b7b;border-left-color:#bcbcbc;
+    opacity:.7;pointer-events:none;
+}
+
+/* STATUS BADGES — NEW MODERN STYLE */
+.badge-status{
+    font-size:12px;font-weight:700;padding:3px 10px;
+    border-radius:14px;
+}
+.available-badge{background:#32d96c1a;color:#108236;}
+.unavailable-badge{background:#00000015;color:#555;}
+
+/* NOTICE TEXT */
+.notice{
+    width:88%;margin:28px auto;background:white;padding:14px;
+    border-left:6px solid red;border-radius:14px;font-size:14px;font-weight:500;
+}
+.quote{text-align:center;font-size:13px;margin:25px 0;font-weight:600;}
+
+/* FOOTER */
+footer{text-align:center;background:#222;color:#fff;padding:16px;font-size:13px;margin-top:25px;}
+</style>
+</head>
+
+
+<body>
+
+<!-- NAV -->
+<div class="mobile-header">
+    <span class="mobile-title">Timetable</span>
+    <img src="{{ url_for('static', filename='imgs/logo.png') }}">
+    <i class="bi bi-list menu-btn" onclick="toggleNav()"></i>
+</div>
+
+<div id="mobileMenu">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/classes">Courses</a>
+    <a href="/timetable" class="active">Timetable</a>
+    <a href="/gallery">Gallery</a>
+    <a href="/contact">Contact</a>
+    <a href="/login"><b>Login</b></a>
+</div>
+
+<script>
+function toggleNav(){
+    let m=document.getElementById("mobileMenu");
+    m.style.display=m.style.display=="block"?"none":"block";
+}
+</script>
+
+
+<!-- HERO -->
+<section class="hero">
+    <h1>📅 Class Timetable</h1>
+    <p>Tap to open schedule</p>
+</section>
+
+
+<!-- CLASS LIST -->
+{% set all_classes = ["Class 1","Class 2","Class 3","Class 4","Class 5",
+                      "Class 6","Class 7","Class 8","Class 9","Class 10",
+                      "Class 11 Arts","Class 12 Arts"] %}
+
+{% for cls in all_classes %}
+{% set exists = cls in classes %}
+
+{% if exists %}
+    <a href="/timetable/{{ cls }}" class="class-card available">
+        {{ cls }}
+        <span class="badge-status available-badge">🟢 Available</span>
+    </a>
+{% else %}
+    <div class="class-card disabled">
+        {{ cls }}
+        <span class="badge-status unavailable-badge">⚪ Not Added</span>
+    </div>
+{% endif %}
+{% endfor %}
+
+
+<div class="notice">🔔 Timetable updates appear here — especially before exams.</div>
+<p class="quote">{{ quote }}</p>
+
+<footer>© 2025 Saraswati Group Tuition Classes</footer>
+
+</body>
+</html>

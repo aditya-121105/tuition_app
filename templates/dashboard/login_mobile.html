@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login • Saraswati Tuition</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+
+<style>
+
+body{
+    background: linear-gradient(180deg,#fff0b3,#fff9e6);
+    font-family:'Poppins',sans-serif;
+    overflow:hidden;
+}
+
+/* CONTAINER CARD */
+.login-box{
+    width:90%;
+    max-width:360px;
+    background:white;
+    padding:25px 22px;
+    border-radius:18px;
+    margin:auto;
+    margin-top:75px;
+    box-shadow:0 8px 18px rgba(0,0,0,.09);
+    animation:drop .6s ease;
+}
+@keyframes drop{
+  from{opacity:0;transform:translateY(-30px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* LOGO */
+.logo{
+    display:flex;justify-content:center;
+    margin-bottom:15px;
+}
+.logo img{
+    height:70px;
+}
+
+/* TITLE */
+.title{
+    text-align:center;font-size:21px;font-weight:700;
+    color:#222;margin-bottom:12px;
+}
+
+/* INPUTS */
+.form-control{
+    border-radius:10px!important;
+    border:2px solid #ececec!important;
+    height:46px;font-size:13.5px;
+}
+.form-control:focus{
+    border-color:#f4c430!important;
+    box-shadow:0 0 6px #f4c43055;
+}
+
+/* BUTTON */
+.btn-login{
+    width:100%;background:#f4c430;
+    padding:12px;border-radius:28px;
+    font-weight:600;border:none;font-size:15px;
+}
+.btn-login:active{transform:scale(.98);}
+
+/* FORGOT */
+.forgot{text-align:center;margin-top:14px;}
+.forgot a{color:#555;font-size:14px;font-weight:500;}
+
+/* FLASH MESSAGES */
+.alert{text-align:center;font-size:14px;padding:8px;}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="login-box">
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='imgs/logo.png') }}">
+    </div>
+
+    <div class="title">Student Login</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,msg in messages %}
+        <div class="alert alert-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form action="/login" method="POST">
+        <input type="text" name="identifier" class="form-control mb-2" placeholder="Email or Enrollment Number" required>
+        <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
+        <button class="btn-login">Sign In</button>
+    </form>
+
+    <div class="forgot">
+        <a href="/forgot-password">Forgot Password?</a>
+    </div>
+
+</div>
+
+</body>
+</html>

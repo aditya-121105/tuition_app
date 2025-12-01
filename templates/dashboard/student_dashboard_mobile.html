@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ======================= BASE ======================= */
+body{
+    font-family:'Poppins',sans-serif;
+    margin:0;
+    background:#12192c;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* ======================= HEADER ======================= */
+.banner{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    padding:35px 22px;
+    border-bottom-left-radius:35px;
+    border-bottom-right-radius:35px;
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
+    text-align:center;
+    animation:fadeIn .9s ease;
+}
+.banner h2{
+    font-size:26px;font-weight:700;margin:0;
+}
+.banner p{
+    margin-top:6px;font-size:15px;opacity:.9;
+}
+
+/* ======================= DASHBOARD GRID ======================= */
+.dashboard{
+    width:90%;
+    margin:auto;
+    margin-top:-40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:18px;
+    animation:pop .7s ease;
+}
+.card{
+    background:#1d2a47;
+    padding:25px 15px;
+    border-radius:18px;
+    text-align:center;
+    transition:.35s;
+    cursor:pointer;
+    box-shadow:0 5px 18px rgba(0,0,0,.25);
+}
+.card i{
+    font-size:35px;
+    margin-bottom:10px;
+}
+.card h4{
+    font-size:17px;
+    margin:4px 0 2px;
+    font-weight:600;
+}
+.card small{
+    opacity:.7;
+    font-size:13px;
+}
+.card:hover{
+    transform:translateY(-8px) scale(1.05);
+    box-shadow:0 12px 35px rgba(0,0,0,.45);
+}
+
+/* COLORS FOR CARDS */
+.profile i{color:#4dd0e1;}
+.attendance i{color:#81c784;}
+.marks i{color:#ffeb3b;}
+.fees i{color:#ff7043;}
+.timetable i{color:#9575cd;}
+.resources i{color:#29b6f6;}
+
+/* ======================= LOGOUT BTN ======================= */
+.logout-btn{
+    display:block;
+    text-align:center;
+    width:150px;
+    margin:38px auto 20px;
+    background:#ff5252;
+    color:white;
+    padding:12px 0;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    transition:.35s;
+}
+.logout-btn:hover{
+    background:#ff2121;
+    transform:scale(1.05);
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pop{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP BANNER -->
+<div class="banner">
+    <h2>Hi, {{ current_user.name }} 👋</h2>
+    <p>Enrollment No: <b>{{ current_user.enrollment_no }}</b></p>
+</div>
+
+<!-- FEATURE GRID -->
+<div class="dashboard">
+
+    <a href="/student/profile" style="color:inherit;text-decoration:none;">
+        <div class="card profile">
+            <i class="fas fa-user-circle"></i>
+            <h4>Profile</h4>
+            <small>Personal Details</small>
+        </div>
+    </a>
+
+    <a href="/student/attendance" style="color:inherit;text-decoration:none;">
+        <div class="card attendance">
+            <i class="fas fa-calendar-check"></i>
+            <h4>Attendance</h4>
+            <small>View Record</small>
+        </div>
+    </a>
+
+    <a href="/student/marks" style="color:inherit;text-decoration:none;">
+        <div class="card marks">
+            <i class="fas fa-chart-line"></i>
+            <h4>Marks</h4>
+            <small>Exam Scores</small>
+        </div>
+    </a>
+
+    <a href="/student/fees" style="color:inherit;text-decoration:none;">
+        <div class="card fees">
+            <i class="fas fa-wallet"></i>
+            <h4>Fees</h4>
+            <small>Status & Payment</small>
+        </div>
+    </a>
+
+
+
+
+</div>
+
+<!-- LOGOUT -->
+<a href="/logout" class="logout-btn">Logout</a>
+
+</body>
+</html>

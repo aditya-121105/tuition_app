@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: #f5f7fb;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        *{transition:.25s ease;}
+
+        /* ================= SIDEBAR FIXED ================= */
+        .sidebar{
+            width:260px;
+            height:100vh;
+            position:fixed;
+            background:#1B263B;
+            color:#fff;
+            padding:25px 20px;
+            display:flex;
+            flex-direction:column;
+            justify-content:flex-start; /* No push logout down */
+        }
+
+        .sidebar h2{
+            text-align:center;
+            font-size:22px;
+            margin-bottom:18px;
+        }
+
+        .nav-links{
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            margin-bottom:25px;
+        }
+
+        .nav-links a{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:12px;
+            color:#d4d7dd;
+            background:#152034;
+            border-radius:6px;
+            text-decoration:none;
+            font-size:15px;
+        }
+
+        .active,
+        .nav-links a:hover{
+            background:#f4c430;
+            color:#000 !important;
+            transform:translateX(5px);
+        }
+
+        /* ================= LOGOUT BUTTON ================= */
+        .logout-btn{
+            background:#d9534f;
+            text-align:center;
+            padding:12px;
+            border-radius:6px;
+            text-decoration:none;
+            color:white;
+            font-weight:600;
+            margin-top:18px; /* gives breathing room */
+        }
+
+        /* ---------------- MOBILE HEIGHT FIX ---------------- */
+        @media(max-height:750px){
+            .nav-links a{padding:10px;font-size:14px;}
+            .logout-btn{padding:10px;margin-top:14px;}
+        }
+        @media(max-height:700px){
+            .nav-links a{padding:9px;font-size:14px;}
+            .logout-btn{padding:10px;margin-top:10px;}
+        }
+        @media(max-height:650px){
+            .nav-links a{padding:8px;font-size:13px;}
+            .logout-btn{padding:9px;margin-top:8px;}
+        }
+        @media(max-height:600px){
+            .nav-links a{padding:7px;font-size:12px;}
+            .logout-btn{padding:9px;margin-top:5px;}
+        }
+
+        /* ================= MAIN CONTENT ================= */
+        .main{
+            margin-left:260px;
+            padding:40px 50px;
+        }
+
+        .welcome{
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            margin-bottom:35px;
+            box-shadow:0 5px 25px rgba(0,0,0,0.06);
+        }
+
+        .cards{
+            display:grid;
+            gap:25px;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            margin-bottom:35px;
+        }
+
+        .card{
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.06);
+            cursor:pointer;
+        }
+
+        .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(244,196,48,0.35);}
+        .card i{font-size:30px;color:#f4c430;}
+        .count{font-size:32px;font-weight:700;margin-top:10px;}
+        .label{font-size:14px;color:#6b6b6b;}
+
+        .class-section{
+            background:white;
+            padding:30px;
+            border-radius:16px;
+            box-shadow:0 5px 25px rgba(0,0,0,0.06);
+        }
+
+        .new-class-grid{
+            display:grid;
+            gap:20px;
+            grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+            margin-top:10px;
+        }
+
+        .class-card{
+            background:rgba(255,255,255,0.55);
+            backdrop-filter:blur(10px);
+            border-radius:18px;
+            padding:20px;
+            text-align:center;
+            border:2px solid rgba(244,196,48,0.25);
+            transition:.35s;
+        }
+
+        .class-card:hover{
+            transform:translateY(-8px) scale(1.03);
+            box-shadow:0 12px 30px rgba(244,196,48,0.45);
+            background:rgba(255,241,180,0.75);
+        }
+
+        .class-title{font-size:18px;font-weight:600;}
+        .class-number{font-size:28px;font-weight:700;color:#1B263B;}
+
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <h2>📊 Dashboard</h2>
+
+    <div class="nav-links">
+        <a class="active"><i class="fa-solid fa-chart-line"></i> Overview</a>
+        <a href="/teacher/students"><i class="fa-solid fa-users"></i> Students</a>
+        <a href="/teacher/attendance"><i class="fa-regular fa-calendar-check"></i> Attendance</a>
+        <a href="/teacher/marks"><i class="fa-solid fa-pen-to-square"></i> Marks</a>
+        <a href="/teacher/fees"><i class="fa-solid fa-wallet"></i> Fees</a>
+        <a href="/teacher/timetable"><i class="fa-solid fa-clock"></i> Timetable</a>
+        <a href="/teacher/add_student"><i class="fa-solid fa-user-plus"></i> Add Student</a>
+    </div>
+
+    <a href="/logout" class="logout-btn">🚪 Logout</a>
+</div>
+
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+    <div class="welcome">
+        <h2>👋 Welcome, {{ current_user.name }}</h2>
+        <p style="color:#666;margin-top:6px;">Your teaching insights at a glance.</p>
+    </div>
+
+    <div class="cards">
+        <div class="card"><i class="fas fa-users"></i><div class="count">{{ total_students }}</div><div class="label">Total Students</div></div>
+        <div class="card"><i class="fas fa-wallet"></i><div class="count">₹{{ monthly_income }}</div><div class="label">Expected Monthly Income</div></div>
+        <div class="card"><i class="fas fa-money-bill-wave"></i><div class="count">₹{{ pending_fees }}</div><div class="label">Pending Fees</div></div>
+    </div>
+
+    <div class="class-section">
+        <h3>📌 Class-wise Student Count</h3>
+        <div class="new-class-grid">
+            {% for class_name, count in class_summary.items() %}
+            <div class="class-card">
+                <span class="class-title">{{ class_name }}</span>
+                <span class="class-number">{{ count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

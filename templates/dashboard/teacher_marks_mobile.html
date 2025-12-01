@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bulk Marks Entry</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Global reset to kill hidden overflow issues */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: "Poppins", sans-serif;
+      background: #f5f7fb;
+    }
+
+    /* Page wrapper */
+    .page {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 16px 0 24px;
+    }
+
+    /* Main card (mobile width) */
+    .container-box {
+      width: 100%;
+      max-width: 480px;           /* hard cap for mobile */
+      background: #ffffff;
+      padding: 18px 16px 20px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1B263B;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    hr {
+      border: none;
+      border-top: 2px solid #f4c430;
+      margin: 8px 0 14px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    select,
+    input[type="date"],
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 2px solid #dddddd;
+      font-size: 14px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #f4c430;
+      outline: none;
+      box-shadow: 0 0 6px rgba(244,196,48,.4);
+    }
+
+    /* Top filter inputs stacked */
+    .top-input-group {
+      margin-bottom: 4px;
+    }
+
+    /* Student cards */
+    .students-wrapper {
+      margin-top: 10px;
+    }
+
+    .student-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border-left: 6px solid #f4c430;
+      padding: 10px 10px 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.05);
+    }
+
+    .student-main {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .student-main div {
+      margin-bottom: 2px;
+    }
+
+    .student-label {
+      font-weight: 600;
+      color: #1B263B;
+    }
+
+    .inline-value {
+      font-weight: 400;
+      color: #333;
+    }
+
+    .student-field {
+      margin-top: 4px;
+    }
+
+    .student-field label {
+      margin-bottom: 3px;
+    }
+
+    .student-field select,
+    .student-field input {
+      margin-bottom: 6px;
+    }
+
+    /* Buttons */
+    .btn-save,
+    .btn-back {
+      width: 100%;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .btn-save {
+      background: #2ea44f;
+      color: #fff;
+    }
+
+    .btn-back {
+      background: #1B263B;
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .btn-save:active,
+    .btn-back:active {
+      transform: scale(0.98);
+    }
+
+    /* Flash messages (if any) */
+    .alert {
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .alert-success { background:#d4edda; color:#155724; }
+    .alert-danger  { background:#f8d7da; color:#721c24; }
+
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+  <div class="container-box">
+
+    <h2>📝 Bulk Marks Entry</h2>
+    <p class="subtitle">Select subject, class & date, then enter marks for each student.</p>
+    <hr>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+      <!-- Top filters -->
+      <div class="top-input-group">
+        <label>Subject</label>
+        <select name="subject" required>
+          <option value="">-- Select --</option>
+          <option>Maths</option>
+          <option>Science</option>
+          <option>English</option>
+          <option>Hindi</option>
+          <option>Social science</option>
+          <option>Gujarati</option>
+        </select>
+      </div>
+
+      <div class="top-input-group">
+        <label>Class</label>
+        <select name="class" id="classSelect" required onchange="loadStudents()">
+          <option value="">-- Select Class --</option>
+          {% for s in students %}
+            <option value="{{ s.class_name }}">{{ s.class_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="top-input-group">
+        <label>Date</label>
+        <input type="date" name="date" required>
+      </div>
+
+      <!-- Students list (cards) -->
+      <div id="studentsWrapper" class="students-wrapper"></div>
+
+      <button type="submit" id="submitBtn" class="btn-save" style="display:none;">
+        Save All Marks
+      </button>
+
+      <a href="/teacher/dashboard" class="btn-back">⬅ Back to Dashboard</a>
+
+    </form>
+  </div>
+</div>
+
+
+<script>
+function loadStudents() {
+  const cls = document.getElementById("classSelect").value;
+  const wrapper = document.getElementById("studentsWrapper");
+  const submitBtn = document.getElementById("submitBtn");
+
+  wrapper.innerHTML = "";
+
+  if (!cls) {
+    submitBtn.style.display = "none";
+    return;
+  }
+
+  const allStudents = [
+    {% for student in students %}
+      { id: "{{ student.id }}",
+        name: "{{ student.name }}",
+        enroll: "{{ student.enrollment_no }}",
+        cls: "{{ student.class_name }}" },
+    {% endfor %}
+  ];
+
+  const filtered = allStudents.filter(s => s.cls === cls);
+
+  if (filtered.length === 0) {
+    wrapper.innerHTML = "<p style='font-size:13px;color:#666;'>No students found for this class.</p>";
+    submitBtn.style.display = "none";
+    return;
+  }
+
+  filtered.forEach(s => {
+    wrapper.innerHTML += `
+      <div class="student-card">
+        <div class="student-main">
+          <div>
+            <span class="student-label">Name:</span>
+            <span class="inline-value"> ${s.name}</span>
+          </div>
+          <div>
+            <span class="student-label">Enrollment:</span>
+            <span class="inline-value"> ${s.enroll}</span>
+          </div>
+        </div>
+
+        <div class="student-field">
+          <label>Status</label>
+          <select name="status_${s.id}">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+
+        <div class="student-field">
+          <label>Marks</label>
+          <input type="number" name="score_${s.id}" placeholder="Marks obtained">
+        </div>
+
+        <div class="student-field">
+          <label>Out Of</label>
+          <input type="number" name="outof_${s.id}" placeholder="Total marks">
+        </div>
+      </div>
+    `;
+  });
+
+  submitBtn.style.display = "block";
+}
+</script>
+
+</body>
+</html>

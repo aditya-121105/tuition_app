@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Fees | Student Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+    body{
+        font-family:'Poppins',sans-serif;
+        background:linear-gradient(135deg,#d7e9ff,#f3f9ff);
+        margin:0;
+        padding:25px 0;
+        display:flex;
+        justify-content:center;
+        min-height:100vh;
+    }
+
+    .container-box{
+        width:95%;
+        max-width:850px;
+        background:white;
+        padding:25px;
+        border-radius:18px;
+        box-shadow:0 8px 25px rgba(0,0,0,.08);
+        animation:fadeUp .6s ease;
+    }
+
+    h2{
+        font-weight:700;
+        color:#123a63;
+        font-size:26px;
+        margin-bottom:10px;
+        text-align:center;
+    }
+
+    /* ---- SUMMARY BOXES ---- */
+    .summary{
+        display:flex;
+        gap:15px;
+        margin-top:12px;
+        flex-wrap:wrap;
+    }
+
+    .summary div{
+        flex:1;
+        min-width:160px;
+        background:#eef5ff;
+        padding:14px;
+        border-radius:12px;
+        font-size:16px;
+        font-weight:600;
+        border-left:6px solid #4b83ff;
+        text-align:center;
+    }
+    .summary div:nth-child(2){border-color:#29a745;}
+    .summary div:nth-child(3){border-color:#ff3b3b;}
+
+    /* ---- DESKTOP TABLE ---- */
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:22px;
+        overflow:hidden;
+        border-radius:10px;
+    }
+    thead{background:#1f497d;color:#fff;}
+    th{padding:12px;font-size:15px;text-align:left;}
+    td{padding:12px;border-bottom:1px solid #e8e8e8;font-size:14px;}
+    tbody tr:hover{background:#fff7c4;}
+
+    .badge{
+        padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;
+    }
+    .paid{background:#22bb33;color:white;}
+    .pending{background:#ff3535;color:white;}
+
+    .btn{
+        padding:8px 14px;border-radius:8px;border:none;cursor:pointer;
+        font-size:13px;font-weight:600;text-decoration:none;transition:.3s;
+    }
+    .btn-pay{background:#2979ff;color:white;}
+    .btn-pay:hover{background:#0059d1;}
+
+    .btn-receipt{background:#444;color:white;}
+    .btn-receipt:hover{background:black;}
+
+    .btn-back{
+        background:#102941;color:white;padding:10px 18px;border-radius:8px;
+        display:block;width:max-content;margin:25px auto 0;text-decoration:none;
+        font-weight:600;transition:.3s;
+    }
+    .btn-back:hover{transform:scale(1.05);background:#1a3a60;}
+
+    /* ------------------ MOBILE VIEW 🌟 ------------------ */
+    @media(max-width:720px){
+
+        table,thead,tbody,tr,th,td{display:block;}
+        thead{display:none;} /* hide header on mobile */
+
+        tr{
+            background:white;margin-bottom:15px;padding:14px;border-radius:12px;
+            box-shadow:0 3px 10px rgba(0,0,0,.08);
+        }
+
+        td{
+            display:flex;justify-content:space-between;
+            padding:10px;font-size:14px;border-bottom:none;
+        }
+
+        td::before{
+            content:attr(data-label);
+            font-weight:600;color:#102941;
+        }
+
+        .summary{gap:8px;}
+        .summary div{padding:12px;font-size:15px;}
+    }
+
+    @keyframes fadeUp{
+        from{opacity:0;transform:translateY(20px);}
+        to{opacity:1;}
+    }
+
+</style>
+</head>
+
+<body>
+<div class="container-box">
+
+<h2>📘 My Fee Status</h2>
+
+<div class="summary">
+    <div>Monthly Fee: ₹{{ monthly_fee }}</div>
+    <div>Total Paid: ₹{{ total_paid }}</div>
+    <div>Total Pending: ₹{{ total_pending }}</div>
+</div>
+
+<table>
+
+    {% for r in records %}
+    <tr>
+        <td data-label="Month">{{ r.month }} {{ r.year }}</td>
+
+        <td data-label="Status">
+            {% if r.status == "Paid" %}
+                <span class="badge paid">Paid</span>
+            {% else %}
+                <span class="badge pending">Pending</span>
+            {% endif %}
+        </td>
+
+        <td data-label="Paid Date">
+            {% if r.paid_date %}{{ r.paid_date.strftime('%d-%m-%Y') }}{% else %}-{% endif %}
+        </td>
+
+        <td data-label="Action">
+            {% if r.status == "Paid" %}
+                <a href="/receipt/{{ r.id }}" class="btn btn-receipt">📄 Receipt</a>
+
+            {% elif first_pending and r.id == first_pending.id %}
+                <form method="POST" style="display:inline;">
+                    <button class="btn btn-pay">💳 Pay Now</button>
+                </form>
+
+            {% else %}
+                <span style="color:#888;">---</span>
+            {% endif %}
+        </td>
+    </tr>
+
+    {% else %}
+    <tr><td colspan="4" style="padding:14px;text-align:center;font-weight:600;">No Fee Records Found</td></tr>
+    {% endfor %}
+
+</table>
+
+{% if not first_pending %}
+<p style="text-align:center;margin-top:15px;font-size:17px;font-weight:600;color:#1fa13c">
+    🎉 All Fees Paid!
+</p>
+{% endif %}
+
+<a href="/student/dashboard" class="btn-back">⬅ Back to Dashboard</a>
+
+</div>
+</body>
+</html>

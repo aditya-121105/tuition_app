@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Directory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* GLOBAL FIX */
+*{ box-sizing:border-box; }
+body{
+    font-family:"Poppins",sans-serif;
+    background:#eef2ff;
+    margin:0; padding:0;
+    overflow-x:hidden; /* 🔥 Stops unwanted scrolling */
+}
+
+/* NAVBAR */
+.navbar{
+    background:#1B263B; padding:15px;
+    color:white; display:flex; align-items:center;
+    flex-wrap:wrap; gap:10px;
+}
+.navbar span{ font-size:18px;font-weight:600; }
+.navbar a{
+    margin-left:auto;padding:8px 14px;color:white;text-decoration:none;
+    background:#d9534f;border-radius:6px;font-size:13px;
+}
+.logout{background:#bb0606 !important;}
+
+/* MAIN WRAPPER */
+.wrapper{
+    width:95%; max-width:1000px;
+    margin:20px auto;padding:18px;
+    background:white;border-radius:14px;
+    box-shadow:0 4px 20px rgba(0,0,0,.07);
+}
+
+/* HEADING */
+h2{ font-size:21px;font-weight:600;margin-bottom:15px; }
+
+/* FILTER SECTION */
+.filter-box{
+    display:flex; flex-wrap:wrap;
+    gap:10px; margin-bottom:18px;
+}
+.filter-box input,
+.filter-box select{
+    flex:1 1 100%;
+    padding:12px;border:2px solid #ddd;
+    border-radius:10px;font-size:15px;
+}
+.filter-box input:focus,
+.filter-box select:focus{
+    border-color:#3d8bff;outline:none;
+}
+.btn-filter{
+    flex:1 1 100%;
+    background:#1B263B;color:white;border:none;
+    padding:12px;border-radius:10px;font-size:15px;
+}
+
+/* MOBILE CARD UI */
+.mobile-view .card{
+    background:#fff; border-left:6px solid #f4c430;
+    padding:14px;border-radius:12px;margin-bottom:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+.row{ margin:4px 0; }
+.label{ font-weight:600; }
+.value{ color:#333;font-size:14px; }
+
+.action-btn{
+    padding:6px 10px;color:white;border-radius:6px;text-decoration:none;
+    font-size:14px;
+}
+.edit{ background:#2ecc71; }
+.del{ background:#e74c3c; }
+
+/* TABLE VIEW (Desktop Only) */
+.table-wrap{
+    overflow-x:auto;margin-top:12px;display:none;
+}
+table{ width:100%;border-collapse:collapse;min-width:700px; }
+th{ background:#f4c430;padding:12px;font-size:14px;text-align:left; }
+td{ padding:10px;font-size:13px;border-bottom:1px solid #e8e8e8; }
+
+/* SHOW TABLE ONLY ON LARGE DEVICES */
+@media(min-width:860px){
+    .mobile-view{display:none;}
+    .table-wrap{display:block;}
+    .btn-filter{flex:unset;width:auto;}
+    .filter-box input,.filter-box select{flex:1;}
+}
+
+/* EXPORT + PAGINATION FIX */
+.export-box{
+    margin-top:15px;
+    display:flex;flex-wrap:wrap;gap:8px;
+}
+.exp{
+    padding:10px 18px;color:white;text-decoration:none;
+    border-radius:10px;font-size:14px;
+}
+.csv{background:#0CA678;} .excel{background:#2F80ED;}
+
+.pagination{
+    list-style:none;margin-top:14px;display:flex;
+    gap:6px;justify-content:center;flex-wrap:wrap;
+}
+.pagination a{
+    text-decoration:none;padding:7px 12px;background:white;
+    border:1px solid #ddd;border-radius:8px;font-size:14px;
+}
+.active a,.pagination a:hover{
+    background:#f4c430;color:white;border:none;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="navbar">
+    <span>👥 Student Management</span>
+    <a href="/teacher/dashboard">Dashboard</a>
+    <a class="logout" href="/logout">Logout</a>
+</div>
+
+<div class="wrapper">
+
+<h2>Student Directory</h2>
+
+<!-- FILTER BOX -->
+<form>
+<div class="filter-box">
+    <input type="text" name="search" placeholder="🔍 Search" value="{{ search_query }}">
+    <select name="class_filter">
+        <option value="all">All Classes</option>
+        {% for c in classes %}
+        <option {% if selected_class==c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn-filter">Search</button>
+</div>
+</form>
+
+<!-- MOBILE LIST VIEW -->
+<div class="mobile-view">
+{% for s in students.items %}
+<div class="card">
+    <div class="row"><span class="label">Name:</span> {{ s.name }}</div>
+    <div class="row"><span class="label">Enroll:</span> {{ s.enrollment_no }}</div>
+    <div class="row"><span class="label">Class:</span> {{ s.class_name }}</div>
+    <div class="row"><span class="label">Phone:</span> {{ s.student_phone }}</div>
+    <div class="row"><span class="label">Village:</span> {{ s.village }}</div>
+    <div class="row"><span class="label">Joined:</span> {{ s.date_joined.strftime('%d %b %Y') }}</div><br>
+
+    <a class="action-btn edit" href="/teacher/edit_student/{{s.id}}"><i class="fa fa-pen"></i></a>
+    <a class="action-btn del" href="/teacher/delete_student/{{s.id}}" onclick="return confirm('Delete student?')"><i class="fa fa-trash"></i></a>
+</div>
+{% endfor %}
+</div>
+
+<!-- TABLE DESKTOP -->
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Enroll</th><th>Name</th><th>Class</th><th>Phone</th><th>Village</th><th>Joined</th><th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for s in students.items %}
+<tr>
+<td>{{ s.enrollment_no }}</td>
+<td>{{ s.name }}</td>
+<td>{{ s.class_name }}</td>
+<td>{{ s.student_phone }}</td>
+<td>{{ s.village }}</td>
+<td>{{ s.date_joined.strftime('%d %b %Y') }}</td>
+<td>
+    <a class="action-btn edit" href="/teacher/edit_student/{{s.id}}"><i class="fa fa-pen"></i></a>
+    <a class="action-btn del" href="/teacher/delete_student/{{s.id}}" onclick="return confirm('Delete student?')"><i class="fa fa-trash"></i></a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- EXPORT -->
+<div class="export-box">
+    <a class="exp csv" href="/teacher/students/export/csv">📄 CSV</a>
+    <a class="exp excel" href="/teacher/students/export/excel">📘 Excel</a>
+</div>
+
+<!-- PAGINATION -->
+<ul class="pagination">
+{% if students.has_prev %}<li><a href="?page={{students.prev_num}}">← Prev</a></li>{% endif %}
+{% for p in students.iter_pages() %}
+{% if p %}<li class="{% if students.page==p %}active{% endif %}"><a href="?page={{p}}">{{p}}</a></li>{% endif %}
+{% endfor %}
+{% if students.has_next %}<li><a href="?page={{students.next_num}}">Next →</a></li>{% endif %}
+</ul>
+
+</div>
+</body>
+</html>

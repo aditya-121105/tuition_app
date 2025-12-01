@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gallery • Saraswati Tuition</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* GLOBAL */
+*{text-decoration:none!important;}
+body{
+  font-family:'Poppins',sans-serif;background:#fff9e6;
+  overflow-x:hidden;margin:0;padding:0;animation:fadeIn .6s;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* ================= HEADER ================= */
+.mobile-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 15px;background:#fff;
+  border-bottom:3px solid #f4c430;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+.mobile-header img{height:45px;}
+.mobile-title{font-size:19px;font-weight:700;color:#111;}
+.menu-btn{font-size:28px;cursor:pointer;}
+
+#mobileMenu{
+  display:none;background:white;padding:10px;border-bottom:3px solid #f4c430;
+}
+#mobileMenu a{
+  display:block;padding:10px;margin:3px 0;font-size:16px;color:black;border-radius:6px;
+}
+#mobileMenu a:hover{background:#f4c430;color:white;}
+
+/* ================= TITLE ================= */
+.page-title{
+  text-align:center;margin:30px 0 18px;
+}
+.page-title h2{
+  font-size:22px;font-weight:700;margin-bottom:4px;
+}
+.page-title p{
+  font-size:13px;color:#666;margin-top:-4px;
+}
+
+/* ================= GALLERY GRID ================= */
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:12px;padding:0 14px 25px;
+}
+
+.photo{
+  height:150px;border-radius:12px;overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  animation:pop .6s;cursor:pointer;
+}
+@keyframes pop{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+
+.photo img{
+  width:100%;height:100%;object-fit:cover;
+  transition:.4s;
+}
+.photo:hover img{transform:scale(1.08);filter:brightness(.88);}
+
+/* ================= FULLSCREEN VIEWER ================= */
+#fullview{
+  position:fixed;inset:0;background:rgba(0,0,0,.92);
+  display:none;justify-content:center;align-items:center;
+  z-index:9999;flex-direction:column;
+}
+#fullview img{
+  width:90vw;max-height:80vh;border-radius:12px;
+}
+.close-btn{
+  margin-top:12px;padding:8px 24px;border-radius:20px;
+  background:#f4c430;font-weight:700;border:none;font-size:14px;
+}
+.close-btn:active{transform:scale(.95);}
+
+/* FOOTER */
+footer{
+  text-align:center;background:#222;color:white;
+  padding:15px;margin-top:20px;font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAV ================= -->
+<div class="mobile-header">
+  <span class="mobile-title">Gallery</span>
+  <img src="{{ url_for('static', filename='imgs/logo.png') }}">
+  <i class="bi bi-list menu-btn" onclick="toggleNav()"></i>
+</div>
+
+<div id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/about">About</a>
+  <a href="/classes">Courses</a>
+  <a href="/timetable">Timetable</a>
+  <a href="/gallery" class="active">Gallery</a>
+  <a href="/contact">Contact</a>
+  <a href="/login"><b>Login</b></a>
+</div>
+
+<script>
+function toggleNav(){
+ let m=document.getElementById("mobileMenu");
+ m.style.display=m.style.display=="block"?"none":"block";
+}
+</script>
+
+
+<!-- PAGE TITLE -->
+<div class="page-title">
+ <h2>📸 Photo Gallery</h2>
+ <p>Memories of learning, festivals & achievements!</p>
+</div>
+
+<!-- GRID -->
+<div class="gallery-grid">
+  {% for img in images %}
+  <div class="photo" onclick="openImg('{{ url_for('static',filename=img) }}')">
+    <img src="{{ url_for('static',filename=img) }}">
+  </div>
+  {% endfor %}
+</div>
+
+<!-- FULL IMAGE VIEW -->
+<div id="fullview">
+  <img id="fullimg">
+  <button class="close-btn" onclick="closeImg()">Close</button>
+</div>
+
+<footer>© 2025 Saraswati Group Tuition Classes</footer>
+
+
+<script>
+function openImg(src){
+  document.getElementById("fullimg").src=src;
+  document.getElementById("fullview").style.display="flex";
+}
+function closeImg(){
+  document.getElementById("fullview").style.display="none";
+}
+</script>
+
+</body>
+</html>

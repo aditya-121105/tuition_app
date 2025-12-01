@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teacher Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+    margin:0;
+    background:#f7f4e9;
+    font-family:"Poppins",sans-serif;
+    overflow-x:hidden;
+}
+
+/* --------------------------------------------
+   TOP NAV BAR
+-------------------------------------------- */
+.topbar{
+    background:#1b263b;
+    color:white;
+    padding:16px 22px;
+    font-size:19px;
+    font-weight:600;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.topbar i{
+    font-size:22px;
+    cursor:pointer;
+}
+
+/* --------------------------------------------
+   SIDEBAR (new glass effect)
+-------------------------------------------- */
+.sidebar{
+    width:270px;
+    height:100vh;
+    background:rgba(27,38,59,.95);
+    backdrop-filter:blur(8px);
+    color:white;
+    position:fixed;
+    left:-300px;
+    top:0;
+    padding:25px 18px;
+    z-index:99;
+    display:flex;
+    flex-direction:column;
+    transition:.45s ease;
+}
+.sidebar.show{left:0;}
+
+.sidebar h2{
+    text-align:center;
+    margin-top:10px;
+    font-weight:700;
+    font-size:22px;
+    margin-bottom:28px;
+}
+
+.nav-links a{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px;
+    font-size:15px;
+    border-radius:10px;
+    color:#cfd6e4;
+    text-decoration:none;
+    margin-bottom:6px;
+}
+.nav-links a i{font-size:18px;}
+.nav-links a:hover,.nav-links a.active{
+    background:#f4c430;
+    color:#000!important;
+    transform:translateX(6px);
+}
+
+/* Logout */
+.logout{
+    margin-top:auto;
+    background:#ff5252;
+    padding:12px;
+    text-align:center;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* Overlay */
+#blur-overlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    z-index:90;
+}
+#blur-overlay.show{display:block;}
+
+/* --------------------------------------------
+   MAIN CONTENT
+-------------------------------------------- */
+.main{
+    padding:20px;
+    margin-top:10px;
+}
+
+.greeting{
+    background:linear-gradient(135deg,#f4c430,#ffe9a4);
+    padding:22px;
+    border-radius:18px;
+    color:#1b263b;
+    font-weight:600;
+    font-size:20px;
+    box-shadow:0 12px 30px rgba(244,196,48,.28);
+}
+
+/* --------------------------------------------
+   STAT CARDS (glass effect)
+-------------------------------------------- */
+.stats{
+    margin-top:25px;
+    display:grid;
+    gap:18px;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+}
+.card{
+    background:rgba(255,255,255,.8);
+    backdrop-filter:blur(8px);
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 8px 22px rgba(0,0,0,.08);
+    transition:.3s;
+}
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 40px rgba(244,196,48,.35);
+}
+.card i{font-size:28px;color:#f4c430;}
+.card .count{font-size:28px;font-weight:700;margin-top:8px;}
+
+/* --------------------------------------------
+   CLASS GRID
+-------------------------------------------- */
+.class-box{
+    background:white;
+    padding:24px;
+    margin-top:28px;
+    border-radius:20px;
+    box-shadow:0 10px 28px rgba(0,0,0,.06);
+}
+
+.class-grid{
+    display:grid;
+    gap:15px;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+}
+.class-card{
+    background:#fff7c8;
+    border-radius:14px;
+    padding:14px;
+    text-align:center;
+    border-left:6px solid #f4c430;
+    transition:.3s;
+}
+.class-card:hover{
+    background:#ffe67b;
+    transform:translateY(-6px);
+}
+.class-card span:first-child{font-weight:600;font-size:15px;}
+.class-card span:last-child{font-size:22px;font-weight:700;color:#1b263b;}
+
+/* --------------------------------------------
+   MOBILE UX IMPROVED — BOTTOM MENU
+-------------------------------------------- */
+.bottom-nav{
+    display:none;
+}
+@media(max-width:850px){
+    .bottom-nav{
+        display:flex;
+        position:fixed;
+        bottom:0; left:0;
+        width:100%;
+        background:white;
+        justify-content:space-around;
+        padding:14px 0;
+        box-shadow:0 -3px 12px rgba(0,0,0,.15);
+        font-size:16px;
+        z-index:80;
+    }
+    .bottom-nav a{
+        color:#444;text-decoration:none;
+        font-weight:600;
+    }
+}
+</style>
+</head>
+
+
+
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+    <span>👋 Welcome, {{ current_user.name }}</span>
+    <i class="fa-solid fa-bars" onclick="toggleMenu()"></i>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sideMenu">
+    <h2>Teacher Panel</h2>
+
+    <div class="nav-links">
+        <a class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="/teacher/students"><i class="fa-solid fa-user-group"></i> Students</a>
+        <a href="/teacher/attendance"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
+        <a href="/teacher/marks"><i class="fa-solid fa-pen-nib"></i> Marks</a>
+        <a href="/teacher/fees"><i class="fa-solid fa-wallet"></i> Fees</a>
+        <a href="/teacher/timetable"><i class="fa-solid fa-clock"></i> Timetable</a>
+        <a href="/teacher/add_student"><i class="fa-solid fa-user-plus"></i> Add Student</a>
+    </div>
+
+    <a href="/logout" class="logout">Logout</a>
+</div>
+
+<!-- Blur Background -->
+<div id="blur-overlay" onclick="toggleMenu()"></div>
+
+
+
+<!-- MAIN -->
+<div class="main">
+
+    <div class="greeting">📘 Teacher Insights Dashboard</div>
+
+    <div class="stats">
+        <div class="card">
+            <i class="fa-solid fa-users"></i>
+            <div class="count">{{ total_students }}</div>
+            <div>Total Students</div>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-wallet"></i>
+            <div class="count">₹{{ monthly_income }}</div>
+            <div>Monthly Income</div>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-money-bill"></i>
+            <div class="count">₹{{ pending_fees }}</div>
+            <div>Pending Fees</div>
+        </div>
+    </div>
+
+
+    <div class="class-box">
+        <h3>📌 Class-wise Strength</h3><br>
+        <div class="class-grid">
+            {% for class_name, count in class_summary.items() %}
+            <div class="class-card">
+                <span>{{ class_name }}</span><br>
+                <span>{{ count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- MOBILE NAVIGATION -->
+
+
+
+
+<script>
+function toggleMenu(){
+    document.getElementById("sideMenu").classList.toggle("show");
+    document.getElementById("blur-overlay").classList.toggle("show");
+}
+</script>
+
+</body>
+</html>

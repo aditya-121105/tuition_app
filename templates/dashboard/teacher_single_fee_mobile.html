@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Fee Details</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:"Poppins",sans-serif;
+    background:#f4f6ff;
+    overflow-x:hidden;
+}
+
+/* NAVBAR */
+.navbar{
+    background:#1B263B;
+    padding:14px 18px;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+}
+.navbar a{
+    margin-left:auto;
+    background:#d9534f;
+    padding:8px 14px;
+    border-radius:6px;
+    text-decoration:none;
+    color:white;
+    font-size:14px;
+}
+.navbar .logout{
+    background:#b90e0e;
+    margin-left:10px;
+}
+
+/* CONTENT CARD */
+.container-box{
+    width:100%;
+    max-width:540px;
+    background:white;
+    margin:22px auto;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.08);
+}
+
+h2{font-size:18px;margin-bottom:6px;font-weight:600;}
+
+.info{
+    font-size:14px;
+    color:#222;
+    line-height:22px;
+    margin-bottom:12px;
+}
+
+/* STUDENT FEE ENTRY CARD */
+.fee-card{
+    background:white;
+    border-left:6px solid #f4c430;
+    padding:12px 14px;
+    margin-bottom:12px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+    font-size:14px;
+}
+
+.row{margin-bottom:6px;}
+.label{font-weight:600;color:#1B263B;}
+.value{color:#333;}
+
+.badge-paid{
+    background:#2ea44f;color:white;font-size:11px;
+    padding:4px 10px;border-radius:20px;
+}
+.badge-pending{
+    background:#d9534f;color:white;font-size:11px;
+    padding:4px 10px;border-radius:20px;
+}
+
+/* BUTTONS */
+.btn{
+    padding:7px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    color:white;
+    font-size:13px;
+    text-decoration:none;
+    display:inline-block;
+    margin-top:6px;
+}
+.btn-pay{background:#2ea44f;}
+.btn-pay:hover{opacity:.9;}
+
+.btn-download{background:#0d6efd;}
+.btn-download:hover{opacity:.9;}
+
+.btn-back{
+    background:#6c757d;
+    padding:10px;
+    display:block;
+    text-align:center;
+    margin-top:18px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="navbar">
+    📄 Student Fee Details
+    <a href="/teacher/dashboard">Dashboard</a>
+    <a href="/logout" class="logout">Logout</a>
+</div>
+
+<div class="container-box">
+
+    <h2>{{ student.name }}</h2>
+
+    <p class="info">
+        <b>Class:</b> {{ student.class_name }} <br>
+        <b>Enrollment:</b> {{ student.enrollment_no }} <br>
+        <b>Monthly Fee:</b> ₹{{ student.monthly_fee }}
+    </p>
+
+    <!-- MONTHLY FEE RECORD LIST -->
+    {% for r in records %}
+    <div class="fee-card">
+
+        <div class="row"><span class="label">Month:</span> <span class="value">{{ r.month }} {{ r.year }}</span></div>
+
+        <div class="row">
+            <span class="label">Status:</span>
+            {% if r.status=="Paid" %}
+                <span class="badge-paid">Paid</span>
+            {% else %}
+                <span class="badge-pending">Pending</span>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <span class="label">Paid Date:</span>
+            <span class="value">
+                {% if r.paid_date %}
+                    {{ r.paid_date.strftime('%d-%m-%Y') }}
+                {% else %} — {% endif %}
+            </span>
+        </div>
+
+        <div class="row">
+            {% if r.status=="Pending" %}
+                <form method="POST" action="/teacher/fees/update" style="display:inline;">
+                    <input type="hidden" name="record_id" value="{{ r.id }}">
+                    <button class="btn btn-pay">Mark Paid ✔</button>
+                </form>
+            {% else %}
+                <a href="/receipt/{{ r.id }}" class="btn btn-download">Download Receipt</a>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+
+    <a href="/teacher/fees" class="btn btn-back">⬅ Back</a>
+
+</div>
+
+</body>
+</html>

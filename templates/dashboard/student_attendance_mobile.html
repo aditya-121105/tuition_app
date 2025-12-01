@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Attendance Report | Student Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght:300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    font-family:'Poppins',sans-serif;
+    margin:0;
+    padding:18px 10px;
+    background:linear-gradient(135deg,#6a8dff,#9dd8ff);
+    overflow-x:hidden;        /* 💥Force remove horizontal scroll */
+}
+
+/* WRAPPER */
+.container-box{
+    max-width:650px;
+    width:100%;
+    margin:auto;
+    background:rgba(255,255,255,0.9);
+    border-radius:20px;
+    padding:22px 18px;
+    box-shadow:0 10px 35px rgba(0,0,0,.20);
+    animation:fadeIn .7s ease;
+    backdrop-filter:blur(8px);
+}
+
+/* HEADER */
+h2{
+    font-size:24px;
+    margin:0;
+    text-align:center;
+    font-weight:700;
+    color:#122044;
+}
+.sub{
+    text-align:center;
+    margin-top:6px;
+    color:#333;
+    font-size:14px;
+}
+
+/* ---------- SUMMARY CARDS ---------- */
+.stats{
+    margin-top:18px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+}
+.stat-box{
+    flex:1 1 120px;
+    text-align:center;
+    background:#fff;
+    border-radius:16px;
+    padding:14px 10px;
+    font-size:14px;
+    font-weight:600;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+.stat-num{
+    display:block;
+    font-size:22px;
+    margin-top:4px;
+    font-weight:700;
+    color:#1b1b32;
+}
+
+/* ---------- TABLE DESKTOP VIEW ---------- */
+.table-area{
+    margin-top:22px;
+    overflow-x:auto;
+    border-radius:14px;
+    box-shadow:0 4px 16px rgba(0,0,0,.12);
+}
+table{
+    width:100%;
+    min-width:300px;
+    border-collapse:collapse;
+}
+th{
+    background:#4255ff;
+    color:white;
+    font-size:15px;
+    padding:12px;
+}
+td{
+    padding:10px;
+    border-bottom:1px solid #e8e8e8;
+}
+
+/* STATUS TAG */
+.tag{
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+    color:#fff;
+}
+.pres{background:#2ecb71;}
+.abs{background:#ff5b5b;}
+
+/* ---------- MOBILE CARD VIEW ---------- */
+.mobile-view{
+    margin-top:22px;
+    display:none;
+}
+.att-card{
+    background:white;
+    border-radius:14px;
+    margin-bottom:10px;
+    padding:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.10);
+}
+.att-date{font-weight:600;color:#122044;}
+.att-status{margin-top:6px;}
+
+/* ---------- BACK BTN ---------- */
+.back-btn{
+    margin-top:18px;
+    display:block;
+    width:170px;
+    text-align:center;
+    background:white;
+    padding:12px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    color:#3549ff;
+    margin-left:auto;
+    margin-right:auto;
+    box-shadow:0 6px 20px rgba(0,0,0,.20);
+}
+.back-btn:hover{transform:translateY(-3px);}
+
+/* ---------- RESPONSIVE SWITCH ---------- */
+@media(max-width:600px){
+    .table-area {display:none;}       /* hide table */
+    .mobile-view {display:block;}     /* show mobile cards */
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container-box">
+
+    <h2>📅 Attendance Report</h2>
+    <div class="sub"><b>Enrollment:</b> {{ current_user.enrollment_no }}</div>
+
+    <!-- STATS -->
+    <div class="stats">
+
+        <div class="stat-box">
+            Present<span class="stat-num">
+                {{ records|selectattr('status','equalto','Present')|list|length }}
+            </span>
+        </div>
+
+        <div class="stat-box">
+            Absent<span class="stat-num">
+                {{ records|selectattr('status','equalto','Absent')|list|length }}
+            </span>
+        </div>
+
+        <div class="stat-box">
+            Attendance<span class="stat-num">
+                {% set p = records|selectattr('status','equalto','Present')|list|length %}
+                {% set t = records|length %}
+                {% if t>0 %} {{ "%.1f"|format((p/t)*100) }}% {% else %} 0% {% endif %}
+            </span>
+        </div>
+
+    </div>
+
+    <!-- DESKTOP TABLE -->
+    <div class="table-area">
+    <table>
+        <thead><tr><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+        <tr>
+            <td>{{ r.date.strftime('%d-%m-%Y') }}</td>
+            <td>
+                {% if r.status == "Present" %}
+                <span class="tag pres">Present</span>
+                {% else %}
+                <span class="tag abs">Absent</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2" style="text-align:center;color:#777;">No Records</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <!-- MOBILE CARD VERSION (NO HORIZONTAL SCROLL FOREVER) -->
+    <div class="mobile-view">
+    {% for r in records %}
+        <div class="att-card">
+            <div class="att-date">📅 {{ r.date.strftime('%d-%m-%Y') }}</div>
+            <div class="att-status">
+                {% if r.status == "Present" %}
+                <span class="tag pres">Present</span>
+                {% else %}
+                <span class="tag abs">Absent</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+    <a class="back-btn" href="/student/dashboard">⟵ Back</a>
+
+</div>
+
+</body>
+</html>

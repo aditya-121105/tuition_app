@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fee Status - Classwise</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #f7f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #1B263B;
+            padding: 14px 22px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        .navbar span {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .navbar a {
+            margin-left: auto;
+            color: white;
+            text-decoration: none;
+            background: #d9534f;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            width: 90%;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* SELECT BOX */
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            width: 250px;
+            font-size: 15px;
+            transition: .3s;
+        }
+        select:focus { border-color: #f4c430; outline: none; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-export { background: #2ea44f; }
+        .btn-primary { background: #1B263B; }
+        .btn-secondary { background: #6c757d; }
+
+        .btn:hover { opacity: 0.9; }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        th {
+            background: #f4c430;
+            padding: 14px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:hover { background: #fff9d8; }
+
+        /* BADGES */
+        .badge-paid {
+            background: #2ea44f;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .badge-pending {
+            background: #d9534f;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <span>💰 Classwise Fee Status</span>
+    <a href="/teacher/dashboard">⬅ Dashboard</a>
+    <a href="/logout" style="margin-left:12px;background:#b90e0e;">Logout</a>
+</div>
+
+
+<div class="container">
+
+    <h2>Fee Status Overview</h2>
+
+    <!-- FILTER + EXPORT -->
+    <form method="GET">
+        <select name="class" onchange="this.form.submit()">
+            <option value="">📚 All Classes</option>
+            {% for c in classes %}
+                <option value="{{ c }}" {% if current_class==c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+
+        <a href="/teacher/fees/export{{ '?class='+current_class if current_class }}"
+           class="btn btn-export" style="margin-left:10px;">
+            📤 Export Pending
+        </a>
+    </form>
+
+    <!-- TABLE -->
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>This Month</th>
+            <th>Total Pending</th>
+            <th>Pending Months</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row.student.name }}</td>
+            <td>{{ row.student.class_name }}</td>
+
+            <td>
+                {% if row.monthly_status == "Paid" %}
+                    <span class="badge-paid">Paid</span>
+                {% else %}
+                    <span class="badge-pending">Pending</span>
+                {% endif %}
+            </td>
+
+            <td>₹{{ row.total_amount }}</td>
+
+            <td>
+                {% if row.pending_months %}
+                    {{ row.pending_months | join(", ") }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="/teacher/fees/{{ row.student.id }}" class="btn btn-primary btn-sm">
+                    View →
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="/teacher/dashboard" class="btn btn-secondary" style="margin-top:20px;">⬅ Back</a>
+
+</div>
+
+</body>
+</html>

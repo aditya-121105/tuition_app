@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Marks Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+    body{
+        font-family:'Poppins',sans-serif;
+        background:linear-gradient(135deg,#ffecd2,#fcb69f);
+        margin:0;
+        padding:20px 0;
+        display:flex;
+        justify-content:center;
+        min-height:100vh;
+    }
+
+    .marks-box{
+        width:95%;
+        max-width:850px;
+        background:rgba(255,255,255,0.92);
+        border-radius:22px;
+        padding:25px;
+        box-shadow:0 12px 35px rgba(0,0,0,0.25);
+        backdrop-filter:blur(12px);
+        animation:fadeIn .7s ease;
+    }
+
+    h2{
+        font-weight:700;
+        text-align:center;
+        margin-bottom:10px;
+        font-size:26px;
+    }
+
+    .sub-info{
+        text-align:center;
+        font-size:14px;
+        color:#444;
+        margin-bottom:18px;
+    }
+
+    /* Desktop table */
+    table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:15px;
+        overflow:hidden;
+    }
+
+    thead{
+        background:#ffa41b;
+        color:white;
+    }
+
+    thead th{
+        padding:12px;
+        text-align:center;
+    }
+
+    tbody tr{transition:.3s;}
+    tbody tr:hover{background:#fff2d0;}
+
+    td{
+        padding:14px;
+        text-align:center;
+        font-weight:500;
+    }
+
+    /* Progress Bar */
+    .progress{
+        background:#ececec;
+        height:8px;
+        border-radius:10px;
+        overflow:hidden;
+        margin-top:6px;
+    }
+    .progress-bar{height:100%;transition:.4s;}
+
+    .high{ background:#00c851; }
+    .mid{ background:#ffbb33; }
+    .low{ background:#ff4444; }
+
+    .remark{
+        font-weight:600;
+        display:block;
+        margin-top:4px;
+    }
+
+    /* BACK BUTTON */
+    .btn-back{
+        margin-top:25px;
+        background:#000000cc;
+        color:white;
+        border-radius:10px;
+        padding:10px 20px;
+        font-weight:600;
+        text-decoration:none;
+        display:block;
+        width:max-content;
+        margin-left:auto;
+        margin-right:auto;
+        transition:.3s;
+    }
+    .btn-back:hover{transform:scale(1.05);}
+
+    /* ---------------------- MOBILE VIEW FIX ---------------------- */
+    @media(max-width:700px){
+
+        table, thead, tbody, th, td, tr { display:block; }
+
+        thead { display:none; } /* hide table header */
+
+        tr{
+            background:white;
+            margin-bottom:15px;
+            border-radius:12px;
+            padding:12px;
+            box-shadow:0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        td{
+            text-align:left;
+            padding:10px 6px;
+            display:flex;
+            justify-content:space-between;
+            font-size:14px;
+        }
+
+        td::before{
+            content:attr(data-label);
+            font-weight:600;
+            color:#333;
+        }
+
+        .progress{height:8px;width:100%}
+    }
+
+    @keyframes fadeIn{
+        from{opacity:0;transform:translateY(20px);}
+        to{opacity:1;}
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="marks-box">
+
+    <h2><i class="fas fa-chart-line"></i> Marks Report</h2>
+    <div class="sub-info">Enrollment No: <b>{{ current_user.enrollment_no }}</b></div>
+
+    <table>
+        {% for m in records %}
+        {% set percent = (m.score/m.out_of)*100 %}
+        <tr>
+            <td data-label="Date">{{ m.date.strftime('%d-%m-%Y') }}</td>
+            <td data-label="Subject">{{ m.subject }}</td>
+            <td data-label="Marks">{{ m.score }}/{{ m.out_of }}</td>
+
+            <td data-label="Progress">
+                <div class="progress">
+                    <div class="progress-bar {% if percent>=75 %}high{% elif percent>=40 %}mid{% else %}low{% endif %}"
+                         style="width:{{ percent }}%"></div>
+                </div>
+
+                {% if percent>=75 %}
+                    <span class="remark" style="color:#00C853">Excellent</span>
+                {% elif percent>=40 %}
+                    <span class="remark" style="color:#ff9100">Average</span>
+                {% else %}
+                    <span class="remark" style="color:#ff2e2e">Needs Improvement</span>
+                {% endif %}
+            </td>
+        </tr>
+
+        {% else %}
+        <tr>
+            <td colspan="4" style="padding:15px;text-align:center;font-weight:600;color:#333">
+                No marks uploaded.
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/student/dashboard" class="btn-back">⬅ Back</a>
+
+</div>
+
+</body>
+</html>

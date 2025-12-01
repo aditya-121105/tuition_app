@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fee Status - Classwise</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:"Poppins",sans-serif;
+    background:#f4f6ff;
+    overflow-x:hidden;
+}
+
+/* NAVBAR */
+.navbar{
+    background:#1B263B;
+    padding:14px 20px;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+}
+.navbar a{
+    margin-left:auto;
+    background:#d9534f;
+    padding:6px 13px;
+    border-radius:6px;
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+}
+.navbar .logout{
+    background:#b90e0e;
+    margin-left:10px;
+}
+
+/* MAIN CONTAINER */
+.container{
+    width:100%;
+    max-width:520px;
+    background:white;
+    margin:20px auto;
+    padding:16px 18px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+/* DROPDOWN */
+select{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:2px solid #ddd;
+    font-size:15px;
+    margin-bottom:12px;
+}
+select:focus{
+    border-color:#f4c430;
+    outline:none;
+}
+
+/* EXPORT BUTTON */
+.export-btn{
+    background:#2ea44f;
+    color:white;
+    padding:10px;
+    display:block;
+    text-align:center;
+    width:100%;
+    border-radius:8px;
+    margin-bottom:14px;
+    text-decoration:none;
+    font-size:15px;
+}
+
+/* STUDENT CARDS */
+.card{
+    background:white;
+    border-left:6px solid #f4c430;
+    padding:12px 14px;
+    margin-bottom:10px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.06);
+}
+
+.row{
+    margin-bottom:6px;
+    font-size:14px;
+}
+.label{
+    font-weight:600;
+    color:#1B263B;
+}
+.value{
+    color:#333;
+}
+
+.badge-paid{
+    background:#2ea44f;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+}
+.badge-pending{
+    background:#d9534f;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+}
+
+/* VIEW BUTTON */
+.view-btn{
+    background:#1B263B;
+    color:white;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:14px;
+    text-decoration:none;
+    display:inline-block;
+    margin-top:6px;
+}
+.back-btn{
+    background:#6c757d;
+    color:white;
+    text-align:center;
+    padding:12px;
+    border-radius:8px;
+    display:block;
+    margin-top:18px;
+    text-decoration:none;
+    font-size:15px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    💰 Classwise Fee Status
+    <a href="/teacher/dashboard">Dashboard</a>
+    <a href="/logout" class="logout">Logout</a>
+</div>
+
+<div class="container">
+
+<h2 style="font-size:18px;margin-bottom:12px;">Fee Overview</h2>
+
+<!-- FILTER -->
+<form method="GET">
+    <select name="class" onchange="this.form.submit()">
+        <option value="">📚 All Classes</option>
+        {% for c in classes %}
+        <option value="{{c}}" {% if current_class==c %}selected{% endif %}>{{c}}</option>
+        {% endfor %}
+    </select>
+</form>
+
+<a href="/teacher/fees/export{{'?class='+current_class if current_class}}" class="export-btn">
+    📤 Export Pending
+</a>
+
+<!-- STUDENT LIST (MOBILE VIEW) -->
+{% for row in data %}
+<div class="card">
+
+    <div class="row"><span class="label">Name:</span> <span class="value">{{row.student.name}}</span></div>
+    <div class="row"><span class="label">Class:</span> <span class="value">{{row.student.class_name}}</span></div>
+
+    <div class="row">
+        <span class="label">This Month:</span>
+        {% if row.monthly_status=="Paid" %}
+            <span class="badge-paid">Paid</span>
+        {% else %}
+            <span class="badge-pending">Pending</span>
+        {% endif %}
+    </div>
+
+    <div class="row"><span class="label">Total Pending:</span> <span class="value">₹{{row.total_amount}}</span></div>
+
+    <div class="row">
+        <span class="label">Pending Months:</span>
+        <span class="value">{{row.pending_months|join(', ') if row.pending_months else '—'}}</span>
+    </div>
+
+    <a href="/teacher/fees/{{row.student.id}}" class="view-btn">View →</a>
+</div>
+{% endfor %}
+
+<a href="/teacher/dashboard" class="back-btn">⬅ Back</a>
+
+</div>
+
+</body>
+</html>

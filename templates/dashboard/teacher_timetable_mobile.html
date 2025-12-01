@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Class Timetable</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* RESET – Prevent scroll on every mobile size */
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;overflow-x:hidden;}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f2f6ff;
+}
+
+/* NAVBAR */
+.navbar{
+    background:#1B263B;
+    padding:14px;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.navbar a{
+    background:#e03c3c;
+    padding:8px 14px;
+    border-radius:6px;
+    color:white;
+    font-size:14px;
+    text-decoration:none;
+}
+
+/* MAIN CARD */
+.container{
+    width:100%;
+    max-width:750px;
+    margin:25px auto;
+    padding:18px;
+}
+
+/* title */
+h2{font-size:21px;margin-bottom:12px;}
+
+/* CLASS DROPDOWN */
+select{
+    width:100%;
+    padding:11px;
+    border-radius:8px;
+    border:2px solid #c7c7c7;
+    font-size:15px;
+    margin-bottom:18px;
+}
+select:focus{border-color:#3d8bff;outline:none;}
+
+/* FORM ADD */
+.form-flex{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap; /* mobile fix */
+}
+.form-flex input,
+.form-flex select{
+    flex:1;
+    min-width:100%;
+    padding:12px;
+    border-radius:7px;
+    border:2px solid #cfcfcf;
+    font-size:14px;
+}
+
+/* On larger screens side-by-side input */
+@media(min-width:600px){
+    .form-flex input,
+    .form-flex select{min-width:200px;}
+}
+
+.add-btn{
+    background:#28a745;color:white;
+    padding:11px 20px;border-radius:7px;
+    margin-top:12px;font-size:15px;
+    border:none;cursor:pointer;
+}
+.add-btn:hover{background:#208436;}
+
+/* ---------------- TABLE (Desktop Only) ---------------- */
+.table-wrap{overflow-x:auto;display:none;} /* hidden on mobile */
+
+table{
+    width:100%;
+    margin-top:22px;
+    border-collapse:collapse;
+    border-radius:12px;
+    overflow:hidden;
+}
+th,td{
+    padding:14px;
+    font-size:15px;
+    text-align:center;
+}
+th{background:#007bff;color:white;}
+tbody tr:hover{background:#e8f1ff;}
+
+/* Delete button */
+.delete-btn{
+    background:#d9534f;color:white;
+    padding:6px 12px;border:none;
+    border-radius:6px;font-size:14px;
+}
+.delete-btn:hover{background:#bf3f3f;}
+
+/* ---------------- MOBILE CARD VIEW ---------------- */
+.mobile-list{display:block;}
+
+.card-row{
+    background:white;
+    padding:15px;
+    margin:8px 0;
+    border-left:6px solid #007bff;
+    border-radius:10px;
+    box-shadow:0 3px 12px rgba(0,0,0,.05);
+}
+
+.row-label{font-weight:600;color:#1f1f1f;font-size:14px;}
+.row-value{font-size:14px;color:#333;}
+
+.action-box{margin-top:10px;}
+.action-box a{text-decoration:none;}
+
+@media(min-width:850px){
+    .mobile-list{display:none;}   /* Show TABLE only on bigger screens */
+    .table-wrap{display:block;}
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <span>📅 Teacher Timetable</span>
+    <a href="/teacher/dashboard">Dashboard</a>
+</div>
+
+
+<!-- MAIN -->
+<div class="container">
+
+<h2>Class Timetable</h2>
+
+<form method="GET" action="/teacher/timetable">
+    <select name="class" onchange="this.form.submit()">
+        <option value="">Select Class</option>
+        {% for i in range(1,13) %}
+        <option value="Class {{i}}" {% if selected_class == ("Class " ~ i) %}selected{% endif %}>
+            Class {{i}}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+
+
+{% if selected_class %}
+
+<h3 style="margin:12px 0;">Showing <b>{{ selected_class }}</b></h3>
+
+<!-- ADD FORM -->
+<form method="POST" action="/teacher/timetable/add">
+    <input type="hidden" name="class_name" value="{{ selected_class }}">
+
+    <div class="form-flex">
+        <select name="day" required>
+            <option selected disabled>Select Day</option>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option>
+        </select>
+
+        <input type="text" name="subject" placeholder="Subject" required>
+        <input type="text" name="time" placeholder="10:00 - 11:00" required>
+    </div>
+
+    <button class="add-btn">➕ Add</button>
+</form>
+
+
+<!-- ---------------- MOBILE CARD VIEW ---------------- -->
+<div class="mobile-list">
+{% for row in records %}
+<div class="card-row">
+    <div><span class="row-label">Day:</span> <span class="row-value">{{ row.day }}</span></div>
+    <div><span class="row-label">Subject:</span> <span class="row-value">{{ row.subject }}</span></div>
+    <div><span class="row-label">Time:</span> <span class="row-value">{{ row.time }}</span></div>
+
+    <div class="action-box">
+        <a href="/teacher/timetable/delete/{{ row.id }}">
+            <button class="delete-btn">Delete</button>
+        </a>
+    </div>
+</div>
+{% endfor %}
+</div>
+
+
+<!-- ---------------- DESKTOP TABLE ---------------- -->
+<div class="table-wrap">
+<table>
+<thead><tr><th>Day</th><th>Subject</th><th>Time</th><th>Action</th></tr></thead>
+<tbody>
+{% for row in records %}
+<tr>
+    <td>{{ row.day }}</td>
+    <td>{{ row.subject }}</td>
+    <td>{{ row.time }}</td>
+    <td><a href="/teacher/timetable/delete/{{ row.id }}"><button class="delete-btn">Delete</button></a></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+{% endif %}
+
+</div>
+</body>
+</html>
