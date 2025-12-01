@@ -13,8 +13,25 @@ app = Flask(__name__)
 
 app.secret_key = "your_secret_key_here"
 # Database Setup
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tuition.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL") 
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
+with app.app_context():
+    db.create_all()
+
+    # ---- Create Default Admin Only Once ----
+    from werkzeug.security import generate_password_hash
+    if not User.query.filter_by(role="teacher").first():
+        admin = User(
+            name="Admin",
+            enrollment_no="ADMIN001",
+            password=generate_password_hash("admin123"),
+            role="teacher"
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print("Default Admin Created: USERNAME: ADMIN001 | PASSWORD: admin123")
+
 
 SENDER_EMAIL = "kumarkhaniyaaditya123@gmail.com"       # will send mail
 RECEIVER_EMAIL = "adityakumarkhaniya143@gmail.com"     # will receive mail
@@ -938,25 +955,4 @@ def gallery():
     else:
         return render_template("public/gallery.html", images=sorted(images))
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        from werkzeug.security import generate_password_hash
-
-        with app.app_context():
-            if not User.query.filter_by(role="teacher").first():
-                admin = User(
-                    name="Admin",
-                    enrollment_no="ADMIN001",  # teacher doesn't use this but needed for DB
-                    password=generate_password_hash("admin123"),
-                    role="teacher",
-                    class_name=None,
-                    monthly_fee=None,
-                    parent_phone=None,
-                    student_phone=None,
-                    village=None
-                )
-                db.session.add(admin)
-                db.session.commit()
-                print("Default Admin Created: USERNAME: admin | PASSWORD: admin123")
-
     app.run(debug=True)
