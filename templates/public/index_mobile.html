@@ -63,18 +63,19 @@ body{
    HERO (FULL IMAGE VISIBLE - NO CROP)
 ========================================================== */
 .hero{
-  min-height:60vh;
+  min-height:5vh;
+    max-height: 48vh;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
   position:relative;
 
-  background:url('{{ url_for("static", filename="imgs/hero_banner.png") }}') center/contain no-repeat;
+  background:url('{{ url_for("static", filename="imgs/img.png") }}') center/contain no-repeat;
   background-color:#000; /* background behind image */
 }
 @media(max-width:480px){
-  .hero{ min-height:70vh;background-size:contain; }
+  .hero{ min-height:45vh;background-size:contain; }
 }
 
 .hero::after{
