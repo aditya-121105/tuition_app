@@ -30,7 +30,9 @@ body{
   display:flex;align-items:center;justify-content:space-between;
   padding:12px 15px;background:#fff;border-bottom:3px solid #f4c430;
   box-shadow:0 3px 10px rgba(0,0,0,0.08);
+
 }
+
 .mobile-header img{height:48px;}
 .mobile-title{font-size:19px;font-weight:700;color:#222;}
 .menu-btn{font-size:29px;color:#111;cursor:pointer;}
@@ -50,9 +52,9 @@ body{
    HERO — full image visible (no crop)
 ========================================================== */
 .banner{
-  min-height:58vh;text-align:center;
+  min-height:48vh;text-align:center;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  background:url('{{ url_for("static", filename="imgs/hero_banner.png") }}') center/contain no-repeat;
+  background:url('{{ url_for("static", filename="imgs/img.png") }}') center/cover no-repeat;
   background-color:#000;color:white;position:relative;
 }
 .banner::after{
@@ -182,15 +184,62 @@ function toggleNav(){
 <h2 class="section-title">Our Achievers 🎓</h2>
 
 <div class="row justify-content-center">
-{% for i in range(8) %}
-  <div class="col-6">
-    <div class="student-card">
-      <img src="/static/imgs/photo{{ (i%6)+1 }}.jpg">
-      <h5>Student {{ i+1 }}</h5>
-      <small>80+ % • Class 10</small>
+<div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 7 * 0.15 }}s;">
+        <img src="/static/imgs/photo1.jpg">
+        <h5>Anand</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
     </div>
-  </div>
-{% endfor %}
+      <div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 1 * 0.15 }}s;">
+        <img src="/static/imgs/photo2.jpg">
+        <h5>Rajveer</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
+    </div>
+      <div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 4 * 0.15 }}s;">
+        <img src="/static/imgs/photo3.jpg">
+        <h5>Soham</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
+    </div>
+      <div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 7 * 0.15 }}s;">
+        <img src="/static/imgs/photo4.jpg">
+        <h5>Tushar</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
+    </div>
+      <div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 3 * 0.15 }}s;">
+        <img src="/static/imgs/photo1.jpg">
+        <h5>Anjali</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
+    </div>
+      <div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 2 * 0.15 }}s;">
+        <img src="/static/imgs/photo5.jpg">
+        <h5>Student 6</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
+    </div>
+      <div class="col-6 col-md-4 col-lg-3">
+      <div class="student-card" style="animation-delay: {{ 8 * 0.15 }}s;">
+        <img src="/static/imgs/photo6.jpg">
+        <h5>Student 7</h5>
+        <small>Class 10 • 2024 Batch</small>
+          <br><small>80+ Percentile</small>
+      </div>
+    </div>
 </div>
 
 
