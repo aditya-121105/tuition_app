@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Teacher Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -11,209 +10,249 @@
 
     <style>
         body {
-            margin: 0;
             font-family: "Poppins", sans-serif;
-            background: #f5f7fb;
-            height: 100vh;
-            overflow-x: hidden;
+            background: #f7f7fb;
+            margin: 0;
+            padding: 0;
         }
 
-        *{transition:.25s ease;}
+        /* NAVBAR */
+        .navbar {
+            background: #1B263B;
+            padding: 14px 22px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        .navbar span {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .navbar a {
+            margin-left: auto;
+            color: white;
+            text-decoration: none;
+            background: #d9534f;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 15px;
+        }
 
-        /* ================= SIDEBAR FIXED ================= */
-        .sidebar{
-            width:260px;
-            height:100vh;
-            position:fixed;
+        /* Container */
+        .container {
+            width: 90%;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Search Filters */
+        .filter-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 15px;
+            transition: .3s;
+        }
+        input:focus, select:focus {
+            border-color: #f4c430;
+            outline: none;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: .3s;
+        }
+        .btn-primary {
             background:#1B263B;
-            color:#fff;
-            padding:25px 20px;
-            display:flex;
-            flex-direction:column;
-            justify-content:flex-start; /* No push logout down */
-        }
-
-        .sidebar h2{
-            text-align:center;
-            font-size:22px;
-            margin-bottom:18px;
-        }
-
-        .nav-links{
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            margin-bottom:25px;
-        }
-
-        .nav-links a{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:12px;
-            color:#d4d7dd;
-            background:#152034;
-            border-radius:6px;
-            text-decoration:none;
-            font-size:15px;
-        }
-
-        .active,
-        .nav-links a:hover{
-            background:#f4c430;
-            color:#000 !important;
-            transform:translateX(5px);
-        }
-
-        /* ================= LOGOUT BUTTON ================= */
-        .logout-btn{
-            background:#d9534f;
-            text-align:center;
-            padding:12px;
-            border-radius:6px;
-            text-decoration:none;
             color:white;
-            font-weight:600;
-            margin-top:18px; /* gives breathing room */
+        }
+        .btn-primary:hover {
+            background:#31415c;
         }
 
-        /* ---------------- MOBILE HEIGHT FIX ---------------- */
-        @media(max-height:750px){
-            .nav-links a{padding:10px;font-size:14px;}
-            .logout-btn{padding:10px;margin-top:14px;}
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 12px;
         }
-        @media(max-height:700px){
-            .nav-links a{padding:9px;font-size:14px;}
-            .logout-btn{padding:10px;margin-top:10px;}
+        th {
+            background:#f4c430;
+            padding: 14px;
+            text-align: left;
+            font-size: 16px;
+            position: sticky;
+            top: 0;
         }
-        @media(max-height:650px){
-            .nav-links a{padding:8px;font-size:13px;}
-            .logout-btn{padding:9px;margin-top:8px;}
-        }
-        @media(max-height:600px){
-            .nav-links a{padding:7px;font-size:12px;}
-            .logout-btn{padding:9px;margin-top:5px;}
-        }
-
-        /* ================= MAIN CONTENT ================= */
-        .main{
-            margin-left:260px;
-            padding:40px 50px;
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
         }
 
-        .welcome{
+        tr:hover {
+            background: #fff9d8;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            color:white;
+            text-decoration:none;
+        }
+        .edit { background:#2ea44f; }
+        .delete { background:#d9534f; }
+
+        /* Export Buttons */
+        .export-box {
+            margin-top: 15px;
+        }
+        .export-box .btn {
+            margin-right:10px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display:flex;
+            gap:6px;
+            list-style:none;
+            margin-top:15px;
+        }
+        .pagination a {
+            text-decoration:none;
+            padding:6px 12px;
             background:white;
-            padding:25px;
-            border-radius:16px;
-            margin-bottom:35px;
-            box-shadow:0 5px 25px rgba(0,0,0,0.06);
+            border:1px solid #ddd;
+            border-radius:5px;
+            transition:.3s;
         }
-
-        .cards{
-            display:grid;
-            gap:25px;
-            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-            margin-bottom:35px;
+        .pagination .active a {
+            background:#f4c430;
+            color:white;
+            border:none;
         }
-
-        .card{
-            background:white;
-            padding:25px;
-            border-radius:16px;
-            box-shadow:0 5px 20px rgba(0,0,0,0.06);
-            cursor:pointer;
+        .pagination a:hover {
+            background:#f4c430;
+            color:white;
         }
-
-        .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(244,196,48,0.35);}
-        .card i{font-size:30px;color:#f4c430;}
-        .count{font-size:32px;font-weight:700;margin-top:10px;}
-        .label{font-size:14px;color:#6b6b6b;}
-
-        .class-section{
-            background:white;
-            padding:30px;
-            border-radius:16px;
-            box-shadow:0 5px 25px rgba(0,0,0,0.06);
-        }
-
-        .new-class-grid{
-            display:grid;
-            gap:20px;
-            grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-            margin-top:10px;
-        }
-
-        .class-card{
-            background:rgba(255,255,255,0.55);
-            backdrop-filter:blur(10px);
-            border-radius:18px;
-            padding:20px;
-            text-align:center;
-            border:2px solid rgba(244,196,48,0.25);
-            transition:.35s;
-        }
-
-        .class-card:hover{
-            transform:translateY(-8px) scale(1.03);
-            box-shadow:0 12px 30px rgba(244,196,48,0.45);
-            background:rgba(255,241,180,0.75);
-        }
-
-        .class-title{font-size:18px;font-weight:600;}
-        .class-number{font-size:28px;font-weight:700;color:#1B263B;}
-
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-
-    <h2>📊 Dashboard</h2>
-
-    <div class="nav-links">
-        <a class="active"><i class="fa-solid fa-chart-line"></i> Overview</a>
-        <a href="/teacher/students"><i class="fa-solid fa-users"></i> Students</a>
-        <a href="/teacher/attendance"><i class="fa-regular fa-calendar-check"></i> Attendance</a>
-        <a href="/teacher/marks"><i class="fa-solid fa-pen-to-square"></i> Marks</a>
-        <a href="/teacher/fees"><i class="fa-solid fa-wallet"></i> Fees</a>
-        <a href="/teacher/timetable"><i class="fa-solid fa-clock"></i> Timetable</a>
-        <a href="/teacher/add_student"><i class="fa-solid fa-user-plus"></i> Add Student</a>
-    </div>
-
-    <a href="/logout" class="logout-btn">🚪 Logout</a>
+<!-- NAVBAR -->
+<div class="navbar">
+    <span>👥 Student Management</span>
+    <a href="/teacher/dashboard">⬅ Dashboard</a>
+    <a href="/logout" style="margin-left:12px;background:#b90e0e;">Logout</a>
 </div>
 
+<div class="container">
 
-<!-- MAIN CONTENT -->
-<div class="main">
+    <h2>Student Directory</h2>
 
-    <div class="welcome">
-        <h2>👋 Welcome, {{ current_user.name }}</h2>
-        <p style="color:#666;margin-top:6px;">Your teaching insights at a glance.</p>
-    </div>
+    <!-- FILTER SECTION -->
+    <form method="GET" action="/teacher/students">
+        <div class="filter-box">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="🔍 Search name, village, or enrollment...">
 
-    <div class="cards">
-        <div class="card"><i class="fas fa-users"></i><div class="count">{{ total_students }}</div><div class="label">Total Students</div></div>
-        <div class="card"><i class="fas fa-wallet"></i><div class="count">₹{{ monthly_income }}</div><div class="label">Expected Monthly Income</div></div>
-        <div class="card"><i class="fas fa-money-bill-wave"></i><div class="count">₹{{ pending_fees }}</div><div class="label">Pending Fees</div></div>
-    </div>
+            <select name="class_filter">
+                <option value="all">📚 All Classes</option>
+                {% for c in classes %}
+                    <option value="{{ c }}" {% if selected_class == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
 
-    <div class="class-section">
-        <h3>📌 Class-wise Student Count</h3>
-        <div class="new-class-grid">
-            {% for class_name, count in class_summary.items() %}
-            <div class="class-card">
-                <span class="class-title">{{ class_name }}</span>
-                <br>
-                <span class="class-number">{{ count }}</span>
-            </div>
-            {% endfor %}
+            <button class="btn btn-primary">Filter</button>
         </div>
+    </form>
+
+    <!-- STUDENT TABLE -->
+    <table>
+        <thead>
+            <tr>
+                <th>Enrollment</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Phone</th>
+                <th>Village</th>
+                <th>Date Joined</th> <!-- ⭐ Added -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for student in students.items %}
+        <tr>
+            <td>{{ student.enrollment_no }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.class_name }}</td>
+            <td>{{ student.student_phone }}</td>
+            <td>{{ student.village }}</td>
+            <td>{{ student.date_joined.strftime('%d %b %Y') if student.date_joined else '—' }}</td> <!-- ⭐ format -->
+            <td>
+                <a href="/teacher/edit_student/{{ student.id }}" class="action-btn edit"><i class="fa fa-pen"></i></a>
+                <a href="/teacher/delete_student/{{ student.id }}" class="action-btn delete"
+                   onclick="return confirm('Are you sure you want to delete this student?')">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    <br>
+
+    <!-- EXPORT BUTTONS -->
+    <div class="export-box">
+        <a href="/teacher/students/export/csv" class="btn" style="background:#198754;color:white;text-decoration:none;">
+            📄 Export CSV
+        </a>
+        <a href="/teacher/students/export/excel" class="btn" style="background:#0d6efd;color:white;text-decoration:none;">
+            📘 Export Excel
+        </a>
     </div>
 
-</div>
+    <!-- PAGINATION -->
+    <div style="display:flex; justify-content:center; margin-top:18px;">
+        <ul class="pagination">
+            {% if students.has_prev %}
+                <li><a href="{{ url_for('student_list', page=students.prev_num, search=search_query, class_filter=selected_class) }}">← Prev</a></li>
+            {% endif %}
 
+            {% for page_num in students.iter_pages() %}
+                {% if page_num %}
+                    <li class="{% if students.page == page_num %}active{% endif %}">
+                        <a href="{{ url_for('student_list', page=page_num, search=search_query, class_filter=selected_class) }}">{{ page_num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if students.has_next %}
+                <li><a href="{{ url_for('student_list', page=students.next_num, search=search_query, class_filter=selected_class) }}">Next →</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
 </body>
 </html>
